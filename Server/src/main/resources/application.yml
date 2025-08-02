@@ -3,10 +3,22 @@ spring:
     name: Server
   jpa:
     database: postgresql
+    hibernate:
+      ddl-auto: update
 
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: mysecretpassword
     url: jdbc:postgresql://localhost:5432/clearcart
+
+  graphql:
+    graphiql:
+      enabled: true
+
+jwt:
+  secret: snatchedVibeCheckNoCapBussinSlapsDripOnFleekLit
+
+
+
 
