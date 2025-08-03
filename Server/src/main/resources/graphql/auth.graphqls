@@ -1,0 +1,46 @@
+union ResponseData = AuthPayload | UserDTO | Role
+
+schema {
+    query: Query,
+    mutation: Mutation
+}
+
+type Role {
+    name: String!
+}
+
+type UserDTO {
+    id: ID!
+    email: String
+    username: String!
+}
+
+type AuthPayload {
+    accessToken: String!,
+    expiresInSeconds: Int!
+}
+
+type GenericResponse {
+    message: String
+    data: ResponseData
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+input SignUpInput {
+    username: String
+    email: String
+    password: String!
+}
+
+type Mutation {
+    login(loginInput: LoginInput): GenericResponse!
+    signUp(signupInput: SignUpInput): GenericResponse!
+}
+
+type Query {
+    me: UserDTO!
+}

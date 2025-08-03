@@ -1,29 +1,3 @@
 spring:
-  application:
-    name: Server
-  jpa:
-    database: postgresql
-    hibernate:
-      ddl-auto: update
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: mysecretpassword
-    url: jdbc:postgresql://localhost:5432/clearcart
-
-  graphql:
-    schema:
-      locations: classpath:graphql/**/
-    graphiql:
-      enabled: true
-
-jwt:
-  issuer: 'clearcart'
-  audience: 'graphql-clients'
-  expires-minutes: 60
-  hs256-secret: snatchedVibeCheckNoCapBussinSlapsDripOnFleekLit
-
-
-
-
+  profiles:
+    active: prod
