@@ -17,6 +17,9 @@ spring:
       locations: classpath:graphql/**/
     graphiql:
       enabled: true
+      path: /playground
+    http:
+      path: /api
 
 jwt:
   issuer: 'clearcart'

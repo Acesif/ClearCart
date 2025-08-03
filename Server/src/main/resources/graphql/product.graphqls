@@ -1,0 +1,25 @@
+type Product {
+    name: String
+    skuCode: String
+    description: String
+    price: Int
+    quantity: Int
+}
+
+input ProductData {
+    name: String
+    skuCode: String
+    description: String
+    price: Int
+    quantity: Int = 1
+}
+
+type ProductResponse {
+    message: String
+    data: Product
+}
+
+extend type Mutation {
+    addProduct(product: ProductData!): ProductResponse!
+    deleteProduct(id: String!): ProductResponse!
+}

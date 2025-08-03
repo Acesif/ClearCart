@@ -21,19 +21,19 @@ public class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, JwtReactiveAuthenticationManager authManager) {
         var authFilter = new AuthenticationWebFilter(authManager);
         authFilter.setServerAuthenticationConverter(new BearerTokenServerAuthenticationConverter());
-        authFilter.setRequiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers("/graphql"));
+        authFilter.setRequiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers("/api"));
 
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(c -> {})
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
 
                 .authorizeExchange(ex -> ex
-                        .pathMatchers(HttpMethod.POST, "/graphql").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/graphiql/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/playground/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/**").authenticated()
                         .anyExchange().denyAll()
                 )
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .addFilterAt(authFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }

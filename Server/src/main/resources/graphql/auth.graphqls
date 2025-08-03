@@ -1,0 +1,55 @@
+######## Inputs ########
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+input SignUpInput {
+    username: String
+    email: String
+    password: String!
+}
+
+######## Inputs ########
+
+######## Responses ########
+
+type UserDTO {
+    id: ID
+    username: String
+    email: String
+}
+
+type AuthPayload {
+    accessToken: String!,
+    expiresInSeconds: Int!
+}
+
+type LoginResponse {
+    message: String
+    data: AuthPayload
+}
+
+type SignupResponse {
+    message: String
+    data: UserDTO
+}
+
+type ProfileResponse {
+    message: String
+    data: UserDTO
+}
+
+######## Responses ########
+
+extend type Query {
+    user(id: String!): ProfileResponse
+}
+
+extend type Mutation {
+    login(loginInput: LoginInput): LoginResponse!
+    signUp(signupInput: SignUpInput): SignupResponse!
+}
+
+
