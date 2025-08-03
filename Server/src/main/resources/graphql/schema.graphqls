@@ -39,8 +39,26 @@ input SignUpInput {
 type Mutation {
     login(loginInput: LoginInput): GenericResponse!
     signUp(signupInput: SignUpInput): GenericResponse!
+    addProduct(product: ProductData!): Product!
+    deleteProduct(id: String!): Product!
 }
 
 type Query {
     me: UserDTO!
+}
+
+type Product {
+    name: String!
+    skuCode: String!
+    description: String
+    price: Int!
+    quantity: Int!
+}
+
+input ProductData {
+    name: String!
+    skuCode: String!
+    description: String
+    price: Int!
+    quantity: Int = 1
 }

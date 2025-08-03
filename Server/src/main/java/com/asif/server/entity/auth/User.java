@@ -1,11 +1,9 @@
-package com.asif.server.entity;
+package com.asif.server.entity.auth;
 
 import com.asif.server.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {

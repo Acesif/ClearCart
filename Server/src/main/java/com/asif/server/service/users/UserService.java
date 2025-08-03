@@ -1,30 +1,41 @@
 package com.asif.server.service.users;
 
+import com.asif.server.base.BaseRepository;
+import com.asif.server.base.BaseService;
 import com.asif.server.dto.auth.AuthPayload;
 import com.asif.server.dto.auth.UserDTO;
 import com.asif.server.dto.commons.GenericResponse;
-import com.asif.server.entity.Role;
-import com.asif.server.entity.User;
+import com.asif.server.entity.auth.Role;
+import com.asif.server.entity.auth.User;
 import com.asif.server.persistence.jpa.UserRepository;
 import com.asif.server.service.jwt.JwtService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.Optional;
-import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
-public class UserService {
+public class UserService extends BaseService<User> {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final JwtService jwt;
-    private final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final BCryptPasswordEncoder encoder;
+
+    public UserService(
+            BaseRepository<User> baseRepository,
+            UserRepository userRepository,
+            RoleService roleService,
+            JwtService jwt, BCryptPasswordEncoder encoder
+    ) {
+        super(baseRepository);
+        this.userRepository = userRepository;
+        this.roleService = roleService;
+        this.jwt = jwt;
+        this.encoder = encoder;
+    }
 
     public Mono<GenericResponse<UserDTO>> signUp(String username, String email, String rawPassword) {
         return Mono.fromCallable(() -> {
@@ -59,7 +70,7 @@ public class UserService {
                             user.setRole(role);
                             return user;
                         })
-                        .flatMap(u -> Mono.fromCallable(() -> userRepository.save(u))
+                        .flatMap(u -> Mono.fromCallable(() -> super.save(u))
                                 .subscribeOn(Schedulers.boundedElastic()))
                         .map(saved -> GenericResponse.<UserDTO>builder()
                                 .message("User created successfully")

@@ -1,7 +1,7 @@
 package com.asif.server.service.users;
 
 import com.asif.server.dto.commons.GenericResponse;
-import com.asif.server.entity.Role;
+import com.asif.server.entity.auth.Role;
 import com.asif.server.persistence.jpa.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

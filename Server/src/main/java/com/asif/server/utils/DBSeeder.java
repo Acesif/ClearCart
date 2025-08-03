@@ -1,6 +1,6 @@
 package com.asif.server.utils;
 
-import com.asif.server.entity.Role;
+import com.asif.server.entity.auth.Role;
 import com.asif.server.persistence.jpa.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

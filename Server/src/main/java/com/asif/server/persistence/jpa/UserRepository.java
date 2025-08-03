@@ -1,7 +1,7 @@
 package com.asif.server.persistence.jpa;
 
 import com.asif.server.base.BaseRepository;
-import com.asif.server.entity.User;
+import com.asif.server.entity.auth.User;
 
 import java.util.Optional;
 

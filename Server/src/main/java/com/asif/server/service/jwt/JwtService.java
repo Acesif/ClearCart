@@ -1,6 +1,6 @@
 package com.asif.server.service.jwt;
 
-import com.asif.server.entity.Role;
+import com.asif.server.entity.auth.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
