@@ -9,8 +9,12 @@ import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username"}),
-        @UniqueConstraint(columnNames = {"email"})
+        @UniqueConstraint(columnNames = {
+                "username"
+        }),
+        @UniqueConstraint(columnNames = {
+                "email"
+        })
 })
 @Getter
 @Setter

@@ -2,9 +2,7 @@ package com.asif.server.entity;
 
 import com.asif.server.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -15,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Role extends BaseEntity {
 
     @Column(nullable = false)
