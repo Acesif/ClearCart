@@ -8,8 +8,6 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class GenericResponse<T> {
-//    todo:
-//    private StatusCodes status;
     private String message;
     private T data;
 }
