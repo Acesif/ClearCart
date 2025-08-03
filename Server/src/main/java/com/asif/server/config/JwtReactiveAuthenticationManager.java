@@ -3,6 +3,7 @@ package com.asif.server.config;
 import com.asif.server.service.jwt.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -15,12 +16,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
+@RequiredArgsConstructor
 public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 
     private final JwtService jwt;
-    public JwtReactiveAuthenticationManager(JwtService jwt) {
-        this.jwt = jwt;
-    }
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {

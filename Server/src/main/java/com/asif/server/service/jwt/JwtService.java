@@ -9,15 +9,12 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class JwtService {
@@ -31,7 +28,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createToken(String subject, Set<Role> roles) {
+    public String createToken(String subject, Role role) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(subject)
@@ -40,7 +37,7 @@ public class JwtService {
                 .and()
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(expiresMinutes, ChronoUnit.MINUTES)))
-                .claims(Map.of("roles", roles))
+                .claims(Map.of("role", role.getName()))
                 .signWith(key())
                 .compact();
     }

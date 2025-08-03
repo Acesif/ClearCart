@@ -27,46 +27,46 @@ public class UserService {
     private final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     public Mono<GenericResponse<UserDTO>> signUp(String username, String email, String rawPassword) {
-        return Mono.defer(() ->
-                Mono.fromCallable(() -> {
-                            if (userRepository.existsByUsername(username)) {
-                                return GenericResponse.<UserDTO>builder()
-                                        .message("Username is already taken")
-                                        .build();
-                            }
-                            if (userRepository.existsByEmail(email)) {
-                                return GenericResponse.<UserDTO>builder()
-                                        .message("Email is already taken")
-                                        .build();
-                            }
-                            return null;
-                        })
-                        .subscribeOn(Schedulers.boundedElastic())
-        ).flatMap(existingResponse -> {
-            if (existingResponse != null) {
-                return Mono.just(existingResponse);
+        return Mono.fromCallable(() -> {
+            if (userRepository.existsByUsername(username)) {
+                return Optional.of(GenericResponse.<UserDTO>builder()
+                        .message("Username is already taken")
+                        .build()
+                );
             }
+            if (userRepository.existsByEmail(email)) {
+                return Optional.of(GenericResponse.<UserDTO>builder()
+                        .message("Email is already taken")
+                        .build()
+                );
+            }
+            return Optional.<GenericResponse<UserDTO>>empty();
+        })
+        .subscribeOn(Schedulers.boundedElastic())
+        .flatMap(opt -> opt
+        .map(Mono::just)
+            .orElseGet(() -> {
+                User user = User.builder()
+                        .username(username)
+                        .email(email)
+                        .password(encoder.encode(rawPassword))
+                        .flag(true)
+                        .build();
 
-            User user = User.builder()
-                    .username(username)
-                    .email(email)
-                    .password(encoder.encode(rawPassword))
-                    .flag(true)
-                    .build();
-
-            return roleService.getRoleByName("USER")
-                    .map(GenericResponse::getData)
-                    .map(role -> {
-                        user.setRoles(Set.of(role));
-                        return user;
-                    })
-                    .flatMap(u -> Mono.fromCallable(() -> userRepository.save(u))
-                            .subscribeOn(Schedulers.boundedElastic()))
-                    .map(saved -> GenericResponse.<UserDTO>builder()
-                            .message("User created successfully")
-                            .data(toDto(user))
-                            .build());
-        });
+                return roleService.getRoleByName("USER")
+                        .map(GenericResponse::getData)
+                        .map(role -> {
+                            user.setRole(role);
+                            return user;
+                        })
+                        .flatMap(u -> Mono.fromCallable(() -> userRepository.save(u))
+                                .subscribeOn(Schedulers.boundedElastic()))
+                        .map(saved -> GenericResponse.<UserDTO>builder()
+                                .message("User created successfully")
+                                .data(toDto(saved))
+                                .build());
+            })
+        );
     }
 
     public Mono<GenericResponse<AuthPayload>> login(String username, String rawPassword) {
@@ -85,8 +85,8 @@ public class UserService {
                                 .build();
                     }
 
-                    Set<Role> roles = userEntity.getRoles();
-                    String token = jwt.createToken(userEntity.getUsername(), roles);
+                    Role role = userEntity.getRole();
+                    String token = jwt.createToken(userEntity.getUsername(), role);
                     UserDTO dto = toDto(userEntity);
                     return GenericResponse.<AuthPayload>builder()
                             .message("Successfully Logged in")
@@ -94,7 +94,7 @@ public class UserService {
                                     AuthPayload.builder()
                                             .user(dto)
                                             .accessToken(token)
-                                            .expiresInSeconds(60L * 60L)
+                                            .expiresInSeconds(3600L)
                                             .build()
                             )
                             .build();
