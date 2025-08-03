@@ -13,11 +13,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/clearcart
 
   graphql:
+    schema:
+      locations: classpath:graphql/**/
     graphiql:
       enabled: true
 
 jwt:
-  secret: snatchedVibeCheckNoCapBussinSlapsDripOnFleekLit
+  issuer: 'clearcart'
+  audience: 'graphql-clients'
+  expires-minutes: 60
+  hs256-secret: snatchedVibeCheckNoCapBussinSlapsDripOnFleekLit
 
 
 

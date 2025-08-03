@@ -1,0 +1,40 @@
+schema {
+    query: Query,
+    mutation: Mutation
+}
+
+type Query {
+    me: UserDTO!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+input SignUpInput {
+    username: String
+    email: String
+    password: String!
+}
+
+type Mutation {
+    login(loginInput: LoginInput): AuthPayload!
+    signUp(signupInput: SignUpInput): UserDTO!
+}
+
+type Role {
+    name: String!
+}
+
+type UserDTO {
+    id: ID!
+    email: String
+    username: String!
+    roles: [Role!]!
+}
+
+type AuthPayload {
+    accessToken: String!,
+    expiresInSeconds: Int!
+}

@@ -14,7 +14,7 @@ public abstract class BaseService<T extends BaseEntity> {
         this.baseRepository = baseRepository;
     }
 
-    public T findById(Long id) {
+    public T findById(String id) {
         return baseRepository.findById(id).orElse(null);
     }
 
@@ -40,7 +40,7 @@ public abstract class BaseService<T extends BaseEntity> {
         return baseRepository.save(entity);
     }
 
-    public T delete(Long id) {
+    public T delete(String id) {
         T entity = baseRepository.findById(id).orElse(null);
         if (entity != null) {
             entity.setFlag(false);
@@ -50,7 +50,7 @@ public abstract class BaseService<T extends BaseEntity> {
         }
     }
 
-    public void hardDelete(Long id) {
+    public void hardDelete(String id) {
         baseRepository.deleteById(id);
     }
 }
