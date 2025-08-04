@@ -22,13 +22,13 @@ public class DBSeeder {
             List<Role> roleList = new ArrayList<>();
             Role admin = Role.builder()
                     .flag(true)
-                    .name("ADMIN")
+                    .name("ROLE_ADMIN")
                     .build();
             roleList.add(admin);
 
             Role user = Role.builder()
                     .flag(true)
-                    .name("USER")
+                    .name("ROLE_USER")
                     .build();
             roleList.add(user);
 

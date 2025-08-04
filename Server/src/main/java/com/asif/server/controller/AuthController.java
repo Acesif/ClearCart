@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @QueryMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasRole('USER')")
     public Mono<GenericResponse<UserDTO>> user(Authentication authentication) {
         return Mono.fromCallable(() -> {
             String userId = authentication.getName();
