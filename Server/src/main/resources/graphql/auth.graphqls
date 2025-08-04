@@ -44,7 +44,7 @@ type ProfileResponse {
 ######## Responses ########
 
 extend type Query {
-    user(id: String!): ProfileResponse
+    user: ProfileResponse
 }
 
 extend type Mutation {

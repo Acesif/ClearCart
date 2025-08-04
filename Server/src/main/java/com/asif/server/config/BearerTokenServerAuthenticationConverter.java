@@ -15,7 +15,7 @@ public class BearerTokenServerAuthenticationConverter implements ServerAuthentic
             String token = auth.substring(7);
             return Mono.just(new RawBearerToken(token));
         }
-        var qp = exchange
+        String qp = exchange
                 .getRequest()
                 .getQueryParams()
                 .getFirst("access_token");

@@ -37,7 +37,7 @@ public class JwtService {
                 .and()
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(expiresMinutes, ChronoUnit.MINUTES)))
-                .claims(Map.of("role", role.getName()))
+                .claims(Map.of("roles", List.of(role.getName())))
                 .signWith(key())
                 .compact();
     }

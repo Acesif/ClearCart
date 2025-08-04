@@ -97,7 +97,7 @@ public class UserService extends BaseService<User> {
                     }
 
                     Role role = userEntity.getRole();
-                    String token = jwt.createToken(userEntity.getUsername(), role);
+                    String token = jwt.createToken(userEntity.getId(), role);
                     UserDTO dto = toDto(userEntity);
                     return GenericResponse.<AuthPayload>builder()
                             .message("Successfully Logged in")
