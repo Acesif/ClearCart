@@ -9,9 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
-                "username"
-        }),
-        @UniqueConstraint(columnNames = {
                 "email"
         })
 })
@@ -23,9 +20,19 @@ import lombok.experimental.SuperBuilder;
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private String username;
+    private String firstName;
 
     @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    @Email
     private String email;
 
     @Column(nullable = false)

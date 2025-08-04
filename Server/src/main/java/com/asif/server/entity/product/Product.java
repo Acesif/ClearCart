@@ -1,6 +1,7 @@
 package com.asif.server.entity.product;
 
 import com.asif.server.base.BaseEntity;
+import com.asif.server.dto.product.RateInterval;
 import com.asif.server.entity.auth.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,12 +11,10 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "products", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "skuCode")
-})
+@Table(name = "products")
 @Getter
 @Setter
 @SuperBuilder
@@ -24,26 +23,28 @@ import java.util.Set;
 public class Product extends BaseEntity {
 
     @Column(nullable = false, length = 50)
-    private String name;
+    private String title;
 
-    @Column(nullable = false, length = 10)
-    private String skuCode;
-
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal price;
-
-    @Column(nullable = false, columnDefinition = "integer default 1")
-    private Integer quantity;
 
     @ManyToMany
     @JoinTable(name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<ProductCategory> productCategory;
+    private List<ProductCategory> productCategory;
 
     @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
+    @JoinColumn(name = "owner", referencedColumnName = "id")
+    private User owner;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal rate;
+
+    @Column(name = "rate_interval")
+    private RateInterval interval;
 }

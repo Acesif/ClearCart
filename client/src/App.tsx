@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter } from 'react-router-dom';
 import { AppContent } from "@/components/auth/AppContent.tsx";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {Toaster} from "sonner";
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
         <ApolloProvider client={client}>
             <BrowserRouter>
                 <AppContent />
+                <Toaster />
             </BrowserRouter>
         </ApolloProvider>
     );

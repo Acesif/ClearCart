@@ -3,10 +3,11 @@ import {useState} from "react";
 import {useMutation} from "@apollo/client";
 import {LOGIN_MUTATION} from "@/graphql/mutations/login.ts";
 import * as React from "react";
+import {toast} from "sonner";
 
 const Login = () => {
 
-    const [formState, setFormState] = useState({ username: '', password: '' });
+    const [formState, setFormState] = useState({ email: '', password: '' });
     const [login, { loading }] = useMutation(LOGIN_MUTATION);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -15,7 +16,7 @@ const Login = () => {
         try {
             const { data } = await login({
                 variables: {
-                    username: formState.username,
+                    email: formState.email,
                     password: formState.password,
                 },
             });
@@ -25,13 +26,13 @@ const Login = () => {
 
             if (token) {
                 localStorage.setItem('accessToken', token);
-                alert(`Login successful: Token expires in ${expiresIn} seconds`);
+                toast(`Login successful: Token expires in ${expiresIn} seconds`);
             } else {
-                alert('Login failed: No token returned');
+                toast('Login failed: No token returned');
             }
         } catch (err: any) {
             console.error('Login error:', err.message);
-            alert('Login failed. Please check your credentials.');
+            toast('Login failed. Please check your credentials.');
         }
     };
 

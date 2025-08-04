@@ -1,4 +1,4 @@
-package com.asif.server.persistence.jpa;
+package com.asif.server.persistence;
 
 import com.asif.server.base.BaseRepository;
 import com.asif.server.entity.auth.Role;

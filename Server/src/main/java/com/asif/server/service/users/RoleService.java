@@ -2,7 +2,7 @@ package com.asif.server.service.users;
 
 import com.asif.server.dto.commons.GenericResponse;
 import com.asif.server.entity.auth.Role;
-import com.asif.server.persistence.jpa.RoleRepository;
+import com.asif.server.persistence.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

@@ -21,6 +21,10 @@ spring:
     http:
       path: /api
 
+logging:
+  level:
+    org.springframework.graphql: DEBUG
+
 jwt:
   issuer: 'clearcart'
   audience: 'graphql-clients'

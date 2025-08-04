@@ -15,9 +15,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Button} from "@/components/ui/button.tsx";
+import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu-trigger-style.ts";
 
 export function Navbar() {
   return (

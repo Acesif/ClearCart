@@ -2,19 +2,21 @@ package com.asif.server.service.users;
 
 import com.asif.server.base.BaseRepository;
 import com.asif.server.base.BaseService;
-import com.asif.server.dto.auth.AuthPayload;
-import com.asif.server.dto.auth.UserDTO;
+import com.asif.server.dto.auth.*;
 import com.asif.server.dto.commons.GenericResponse;
 import com.asif.server.entity.auth.Role;
 import com.asif.server.entity.auth.User;
-import com.asif.server.persistence.jpa.UserRepository;
+import com.asif.server.persistence.UserRepository;
 import com.asif.server.service.jwt.JwtService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.Optional;
+
+import static com.asif.server.utils.ExtractAuth.extractUserInformation;
 
 @Service
 public class UserService extends BaseService<User> {
@@ -37,15 +39,9 @@ public class UserService extends BaseService<User> {
         this.encoder = encoder;
     }
 
-    public Mono<GenericResponse<UserDTO>> signUp(String username, String email, String rawPassword) {
+    public Mono<GenericResponse<UserDTO>> signUp(SignUpInput signUpInput) {
         return Mono.fromCallable(() -> {
-            if (userRepository.existsByUsername(username)) {
-                return Optional.of(GenericResponse.<UserDTO>builder()
-                        .message("Username is already taken")
-                        .build()
-                );
-            }
-            if (userRepository.existsByEmail(email)) {
+            if (userRepository.existsByEmail(signUpInput.email())) {
                 return Optional.of(GenericResponse.<UserDTO>builder()
                         .message("Email is already taken")
                         .build()
@@ -58,9 +54,12 @@ public class UserService extends BaseService<User> {
         .map(Mono::just)
             .orElseGet(() -> {
                 User user = User.builder()
-                        .username(username)
-                        .email(email)
-                        .password(encoder.encode(rawPassword))
+                        .firstName(signUpInput.firstName())
+                        .lastName(signUpInput.lastName())
+                        .phoneNumber(signUpInput.phoneNumber())
+                        .address(signUpInput.address())
+                        .email(signUpInput.email())
+                        .password(encoder.encode(signUpInput.password()))
                         .flag(true)
                         .build();
 
@@ -80,16 +79,16 @@ public class UserService extends BaseService<User> {
         );
     }
 
-    public Mono<GenericResponse<AuthPayload>> login(String username, String rawPassword) {
+    public Mono<GenericResponse<AuthPayload>> login(LoginInput loginInput) {
         return Mono.fromCallable(() -> {
-                    Optional<User> user = userRepository.findByUsername(username);
+                    Optional<User> user = userRepository.findByEmail(loginInput.email());
                     if (user.isEmpty()) {
                         return GenericResponse.<AuthPayload>builder()
                                 .message("Account does not exist")
                                 .build();
                     }
                     User userEntity = user.get();
-                    if (!encoder.matches(rawPassword, userEntity.getPassword())) {
+                    if (!encoder.matches(loginInput.password(), userEntity.getPassword())) {
                         return GenericResponse.<AuthPayload>builder()
                                 .message("Incorrect password")
                                 .data(null)
@@ -112,11 +111,33 @@ public class UserService extends BaseService<User> {
                 }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public static UserDTO toDto(User user) {
+    private UserDTO toDto(User user) {
         return UserDTO.builder()
                 .id(user.getId())
-                .username(user.getUsername())
+                .fullName(user.getFirstName() + " " + user.getLastName())
+                .email(user.getEmail())
                 .email(user.getEmail())
                 .build();
+    }
+
+    public Mono<GenericResponse<UserDTO>> getMyInfo(Authentication authentication) {
+        return Mono.fromCallable(() -> {
+
+            UserInformation userInformation = extractUserInformation(authentication);
+            User user = findById(userInformation.userId());
+            if (user == null) {
+                return GenericResponse.<UserDTO>builder()
+                        .message("User not found")
+                        .data(null)
+                        .build();
+            }
+            UserDTO userDTO = toDto(user);
+
+            return GenericResponse.<UserDTO>builder()
+                    .message("User found")
+                    .data(userDTO)
+                    .build();
+
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 }

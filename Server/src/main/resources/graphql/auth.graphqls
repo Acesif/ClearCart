@@ -1,13 +1,16 @@
 ######## Inputs ########
 
 input LoginInput {
-    username: String!
+    email: String!
     password: String!
 }
 
 input SignUpInput {
-    username: String
-    email: String
+    firstName: String!
+    lastName: String!
+    address: String!
+    phoneNumber: String!
+    email: String!
     password: String!
 }
 
@@ -17,7 +20,7 @@ input SignUpInput {
 
 type UserDTO {
     id: ID
-    username: String
+    fullName: String
     email: String
 }
 

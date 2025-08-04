@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label.tsx"
 import * as React from "react";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
-  setFormState: React.Dispatch<React.SetStateAction<{ username: string; password: string }>>;
+  setFormState: React.Dispatch<React.SetStateAction<{ email: string; password: string }>>;
   isLoading: boolean;
   handleSubmit: (e: React.FormEvent) => void;
 };
@@ -30,21 +30,21 @@ export function LoginForm({
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your username below to login to your account
+            Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="Enter your username"
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
                   onChange={(e) =>
                       setFormState((prev) =>
-                          ({ ...prev, username: e.target.value }))
+                          ({ ...prev, email: e.target.value }))
                   }
                   required
                 />

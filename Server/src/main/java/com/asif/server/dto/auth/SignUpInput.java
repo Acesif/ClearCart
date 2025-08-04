@@ -1,6 +1,6 @@
 package com.asif.server.dto.auth;
 
-public record SignUpInput(String username, String email, String password) {
+public record SignUpInput(String firstName, String lastName, String address, String phoneNumber, String email, String password) {
 
 }
 

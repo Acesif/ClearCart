@@ -1,13 +1,15 @@
-package com.asif.server.persistence.jpa;
+package com.asif.server.persistence;
 
 import com.asif.server.base.BaseRepository;
 import com.asif.server.entity.auth.User;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
 public interface UserRepository extends BaseRepository<User> {
 
-    Optional<User> findByUsername(String username);
-    boolean existsByUsername(String username);
+    Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
+
+    User getUserById(String id);
 }

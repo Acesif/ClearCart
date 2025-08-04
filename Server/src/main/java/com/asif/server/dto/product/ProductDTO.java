@@ -1,20 +1,19 @@
 package com.asif.server.dto.product;
 
-import lombok.*;
+import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
-@Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProductDTO {
-
-    private String name;
-    private String skuCode;
-    private String description;
-    private BigDecimal price;
-    private Integer quantity;
-}
+public record ProductDTO(
+        String id,
+        String title,
+        String description,
+        BigDecimal price,
+        Set<String> productCategoryIds,
+        String ownerId,
+        BigDecimal rate,
+        RateInterval interval
+) {}
 
