@@ -16,7 +16,7 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration api = new CorsConfiguration();
         api.setAllowedOrigins(List.of(
-                "http://localhost:3000"
+                "http://localhost:5173"
         ));
         api.setAllowedMethods(
                 List.of("POST", "GET", "OPTIONS")
@@ -39,7 +39,7 @@ public class CorsConfig {
         playground.setMaxAge(Duration.ofHours(1));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api", api);
+        source.registerCorsConfiguration("/**", api);
         source.registerCorsConfiguration("/playground/**", playground);
 
         return source;
