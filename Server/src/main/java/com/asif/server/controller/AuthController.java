@@ -1,9 +1,6 @@
 package com.asif.server.controller;
 
-import com.asif.server.dto.auth.AuthPayload;
-import com.asif.server.dto.auth.LoginInput;
-import com.asif.server.dto.auth.SignUpInput;
-import com.asif.server.dto.auth.UserDTO;
+import com.asif.server.dto.auth.*;
 import com.asif.server.dto.commons.GenericResponse;
 import com.asif.server.entity.auth.User;
 import com.asif.server.service.users.UserService;
@@ -15,10 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
-import java.util.Optional;
+import static com.asif.server.utils.ExtractAuth.extractUserInformation;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,11 +41,12 @@ public class AuthController {
     }
 
     @QueryMapping
-    @PreAuthorize("isAuthenticated() and hasRole('USER')")
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public Mono<GenericResponse<UserDTO>> user(Authentication authentication) {
         return Mono.fromCallable(() -> {
-            String userId = authentication.getName();
-            User user = users.findById(userId);
+
+            UserInformation userInformation = extractUserInformation(authentication);
+            User user = users.findById(userInformation.userId());
             if (user == null) {
                 return GenericResponse.<UserDTO>builder()
                         .message("User not found")

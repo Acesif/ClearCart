@@ -64,7 +64,7 @@ public class UserService extends BaseService<User> {
                         .flag(true)
                         .build();
 
-                return roleService.getRoleByName("USER")
+                return roleService.getRoleByName("ROLE_USER")
                         .map(GenericResponse::getData)
                         .map(role -> {
                             user.setRole(role);

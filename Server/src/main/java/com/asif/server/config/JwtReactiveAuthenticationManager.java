@@ -37,7 +37,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                     .map(String.class::cast)
                     .toList();
 
-            var authorities = roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).toList();
+            var authorities = roles.stream().map(SimpleGrantedAuthority::new).toList();
             return Mono.just(new UsernamePasswordAuthenticationToken(subject, jws, authorities));
         } catch (Exception e) {
             return Mono.error(new BadCredentialsException("Invalid token", e));
