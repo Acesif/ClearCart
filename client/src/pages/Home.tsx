@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/commons/Navbar.tsx';
 import AppRoutes from "@/Routes.tsx";
 
-export function AppContent() {
+export function Home() {
     const location = useLocation();
     const hideNavbarPaths = ['/login', '/signup'];
     const hideNavbar = hideNavbarPaths.includes(location.pathname);
@@ -14,9 +14,7 @@ export function AppContent() {
                     <Navbar />
                 </div>
             )}
-            <div className="p-4">
-                <AppRoutes />
-            </div>
+            <AppRoutes />
         </div>
     );
 }

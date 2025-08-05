@@ -22,6 +22,7 @@ import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu-trigge
 import {extractUserInformation} from "@/lib/token.ts";
 import {useEffect, useState} from "react";
 import type {UserInformation} from "@/types/UserInformation.ts";
+import {Link} from "react-router-dom";
 
 export function Navbar() {
 
@@ -37,34 +38,40 @@ export function Navbar() {
         <NavigationMenu>
           <NavigationMenuList>
             {/* Browse Items */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                  <Button variant="ghost" color="primary">
-                      <div className="flex items-center justify-center gap-2">
-                          <PackageSearch />
-                          Browse
-                      </div>
-                  </Button>
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  <ListItem href="/browse/all" title="All Items">
-                    View all available items for sale or rent.
-                  </ListItem>
-                  <ListItem href="/browse/electronics" title="Electronics">
-                    Find the latest gadgets and electronics.
-                  </ListItem>
-                  <ListItem href="/browse/furniture" title="Furniture">
-                    Furnish your home with our wide selection.
-                  </ListItem>
-                  <ListItem href="/browse/clothing" title="Clothing">
-                    Discover new trends in fashion.
-                  </ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+              <NavigationMenuItem>
+                  <NavigationMenuTrigger>
+                      <Button variant="ghost" color="primary">
+                          <div className="flex items-center justify-center gap-2">
+                              <PackageSearch />
+                              Browse
+                          </div>
+                      </Button>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                          <ListItem href="/browse/electronics" title="Electronics">
+                              Find the latest gadgets and electronics.
+                          </ListItem>
+                          <ListItem href="/browse/furniture" title="Furniture">
+                              Furnish your home with our wide selection.
+                          </ListItem>
+                          <ListItem href="/browse/home-appliances" title="Home Appliances">
+                              Upgrade your home with modern appliances.
+                          </ListItem>
+                          <ListItem href="/browse/sporting-goods" title="Sporting Goods">
+                              Gear up with our sports equipment and accessories.
+                          </ListItem>
+                          <ListItem href="/browse/outdoor" title="Outdoor">
+                              Explore outdoor gear and equipment for your next adventure.
+                          </ListItem>
+                          <ListItem href="/browse/toys" title="Toys">
+                              Fun and educational toys for all ages.
+                          </ListItem>
+                      </ul>
+                  </NavigationMenuContent>
+              </NavigationMenuItem>
 
-            {/* Rent Items */}
+              {/* Rent Items */}
             <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                     <Button variant="ghost" color="primary">
@@ -131,8 +138,18 @@ export function Navbar() {
                       </div>
                   </div>
               </>
-          ) : null
-          }
+          ) : (
+              <div>
+                  <Button
+                      variant="outline"
+                      className="bg-amber-50 cursor-pointer"
+                  >
+                      <Link to="/me">
+                          My Account
+                      </Link>
+                  </Button>
+              </div>
+          )}
 
           </NavigationMenuList>
         </NavigationMenu>

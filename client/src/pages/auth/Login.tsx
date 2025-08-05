@@ -1,4 +1,4 @@
-import {LoginForm} from "@/components/ui/login-form.tsx";
+import {LoginForm} from "@/components/auth/LoginForm.tsx";
 import {useState} from "react";
 import {useMutation} from "@apollo/client";
 import {LOGIN_MUTATION} from "@/graphql/mutations/login.ts";
