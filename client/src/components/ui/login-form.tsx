@@ -12,7 +12,10 @@ import { Label } from "@/components/ui/label.tsx"
 import * as React from "react";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
-  setFormState: React.Dispatch<React.SetStateAction<{ email: string; password: string }>>;
+  setFormState: React.Dispatch<React.SetStateAction<{
+    email: string,
+    password: string
+  }>>;
   isLoading: boolean;
   handleSubmit: (e: React.FormEvent) => void;
 };

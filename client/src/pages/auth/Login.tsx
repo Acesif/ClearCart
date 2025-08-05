@@ -4,11 +4,15 @@ import {useMutation} from "@apollo/client";
 import {LOGIN_MUTATION} from "@/graphql/mutations/login.ts";
 import * as React from "react";
 import {toast} from "sonner";
+import {useNavigate} from "react-router-dom";
+import {saveToken} from "@/lib/token.ts";
 
 const Login = () => {
 
     const [formState, setFormState] = useState({ email: '', password: '' });
     const [login, { loading }] = useMutation(LOGIN_MUTATION);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,11 +26,11 @@ const Login = () => {
             });
 
             const token = data?.login?.data?.accessToken;
-            const expiresIn = data?.login?.data?.expiresInSeconds;
 
             if (token) {
-                localStorage.setItem('accessToken', token);
-                toast(`Login successful: Token expires in ${expiresIn} seconds`);
+                saveToken(token);
+                toast(`Login successful`);
+                navigate("/");
             } else {
                 toast('Login failed: No token returned');
             }

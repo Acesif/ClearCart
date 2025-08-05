@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
-import { AppContent } from "@/components/auth/AppContent.tsx";
+import { AppContent } from "@/components/commons/AppContent.tsx";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import {Toaster} from "sonner";
 
