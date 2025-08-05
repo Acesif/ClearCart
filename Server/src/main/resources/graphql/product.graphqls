@@ -1,25 +1,46 @@
-type Product {
-    name: String
-    skuCode: String
-    description: String
-    price: Int
-    quantity: Int
+enum RateInterval {
+    PER_HOUR
+    PER_DAY
+    PER_WEEK
+    PER_MONTH
 }
 
-input ProductData {
+type ProductCategory {
+    id: String
+    categoryId: String
     name: String
-    skuCode: String
+}
+
+input ProductCategoryInput {
+    categoryId: String!
+    name: String!
+}
+
+type ProductData {
+    id: String
+    title: String
     description: String
-    price: Int
-    quantity: Int = 1
+    price: Float
+    productCategoryIds: [String!]
+    rate: Float
+    interval: RateInterval
+}
+
+input ProductInput {
+    title: String!
+    description: String!
+    price: Float!
+    productCategoryIds: [String!]!
+    rate: Float!
+    interval: RateInterval!
 }
 
 type ProductResponse {
     message: String
-    data: Product
+    data: ProductData
 }
 
 extend type Mutation {
-    addProduct(product: ProductData!): ProductResponse!
+    addProduct(product: ProductInput!): ProductResponse!
     deleteProduct(id: String!): ProductResponse!
 }

@@ -5,6 +5,7 @@ spring:
     database: postgresql
     hibernate:
       ddl-auto: update
+#    show-sql: true
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -21,9 +22,9 @@ spring:
     http:
       path: /api
 
-logging:
-  level:
-    org.springframework.graphql: DEBUG
+#logging:
+#  level:
+#    org.springframework.graphql: DEBUG
 
 jwt:
   issuer: 'clearcart'

@@ -6,6 +6,7 @@ import com.asif.server.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
@@ -20,15 +21,13 @@ public class ProductController {
     @MutationMapping
     public Mono<GenericResponse<ProductDTO>> addProduct(
             @Argument ProductDTO product,
-            Principal principal
+            Authentication authentication
     ) {
-        String userId =  principal.getName();
-        System.out.println(userId);
-        return productService.createProduct(product);
+        return productService.createProduct(product, authentication);
     }
 
     @MutationMapping
-    public Mono<GenericResponse<ProductDTO>> deleteProduct(@Argument String id) {
+    public Mono<GenericResponse<Void>> deleteProduct(@Argument String id) {
        return productService.deleteProduct(id);
     }
 }

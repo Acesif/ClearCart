@@ -25,7 +25,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 

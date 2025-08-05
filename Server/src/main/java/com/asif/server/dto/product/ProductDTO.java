@@ -12,7 +12,6 @@ public record ProductDTO(
         String description,
         BigDecimal price,
         Set<String> productCategoryIds,
-        String ownerId,
         BigDecimal rate,
         RateInterval interval
 ) {}
