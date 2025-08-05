@@ -1,24 +1,10 @@
 import {ShoppingCart} from "lucide-react";
 
 import { Button } from "@/components/ui/button.tsx";
-import * as React from "react";
 import {Link} from "react-router-dom";
+import {FaMagnifyingGlass} from "react-icons/fa6";
 
-interface HeroProps {
-  heading: string;
-  description: string;
-  button: {
-    text: string;
-    icon?: React.ReactNode;
-    url: string;
-  };
-}
-
-const Hero = ({
-  heading,
-  description,
-  button,
-}: HeroProps) => {
+const Hero = () => {
   return (
     <section className="overflow-hidden py-32">
       <div className="container">
@@ -38,15 +24,15 @@ const Hero = ({
               <ShoppingCart className="size-6" />
             </span>
             <h2 className="mx-auto max-w-5xl text-center text-3xl font-medium text-balance md:text-6xl">
-              {heading}
+              ClearCart
             </h2>
             <p className="mx-auto max-w-3xl text-center text-muted-foreground md:text-lg">
-              {description}
+              Your go to marketplace for buying, selling and renting
             </p>
             <div className="flex flex-col items-center justify-center gap-3 pt-3 pb-12">
               <Button size="lg" asChild>
-                <Link to={button.url}>
-                  {button.text} {button.icon}
+                <Link to="/browse/all">
+                  Browse Items <FaMagnifyingGlass />
                 </Link>
               </Button>
             </div>
