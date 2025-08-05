@@ -43,7 +43,9 @@ export function Navbar() {
                       <Button variant="ghost" color="primary">
                           <div className="flex items-center justify-center gap-2">
                               <PackageSearch />
-                              Browse
+                              <a href="/browse/all">
+                                  Browse
+                              </a>
                           </div>
                       </Button>
                   </NavigationMenuTrigger>

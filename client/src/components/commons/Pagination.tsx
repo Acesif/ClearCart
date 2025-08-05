@@ -30,13 +30,10 @@ const Pagination = ({ initialPage = 1 }: PaginationProps) => {
                     <PaginationPrevious className="cursor-pointer" onClick={handlePrevious} />
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationLink  className="cursor-pointer">{page}</PaginationLink>
+                    <PaginationLink className="cursor-pointer">{page}</PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationNext  className="cursor-pointer" onClick={handleNext} />
+                    <PaginationNext className="cursor-pointer" onClick={handleNext} />
                 </PaginationItem>
             </PaginationContent>
         </Paging>
