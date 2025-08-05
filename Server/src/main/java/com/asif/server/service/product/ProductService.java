@@ -9,6 +9,8 @@ import com.asif.server.entity.product.Product;
 import com.asif.server.entity.product.ProductCategory;
 import com.asif.server.persistence.ProductCategoryRepository;
 import com.asif.server.persistence.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -63,17 +65,17 @@ public class ProductService extends BaseService<Product> {
 
     public Mono<GenericResponse<ProductDTO>> updateProduct(ProductDTO product, Authentication authentication) {
         return Mono.fromCallable(() -> {
-                Product toUpdate = super.findById(product.id());
+            Product toUpdate = super.findById(product.id());
+            UserInformation userInformation = extractUserInformation(authentication);
+
+            if (userInformation.userId().equals(toUpdate.getOwner().getId()) && toUpdate.getFlag()) {
+
+                List<ProductCategory> categories = productCategoryRepository.findAllByCategoryIds(product.productCategoryIds());
 
                 toUpdate.setTitle(product.title());
                 toUpdate.setPrice(product.price());
                 toUpdate.setDescription(product.description());
-                toUpdate.setProductCategory(
-                        productCategoryRepository
-                                .findAllByCategoryIds(
-                                        product.productCategoryIds()
-                                )
-                );
+                toUpdate.setProductCategory(categories);
                 toUpdate.setOwner(toUpdate.getOwner());
                 toUpdate.setRate(product.rate());
                 toUpdate.setInterval(product.interval());
@@ -85,12 +87,22 @@ public class ProductService extends BaseService<Product> {
                         .message("Product updated")
                         .data(response)
                         .build();
+            }
+            return GenericResponse.<ProductDTO>builder()
+                    .message("Not authorized to update this product")
+                    .data(product)
+                    .build();
 
             }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<GenericResponse<Void>> deleteProduct(String id) {
+    public Mono<GenericResponse<Void>> deleteProduct(String id, Authentication authentication) {
         return Mono.fromCallable(() -> {
+
+            Product toDelete = super.findById(id);
+
+            UserInformation userInformation = extractUserInformation(authentication);
+            if (userInformation.userId().equals(toDelete.getOwner().getId())) {
                 Product deletedProduct = delete(id);
                 if (deletedProduct.getFlag()) {
                     return GenericResponse.<Void>builder()
@@ -103,7 +115,19 @@ public class ProductService extends BaseService<Product> {
                         .message("Product deleted")
                         .data(null)
                         .build();
-            }).subscribeOn(Schedulers.boundedElastic());
+            }
+            return GenericResponse.<Void>builder()
+                    .message("Not authorized to delete product")
+                    .build();
+
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Mono<Page<ProductDTO>> getAllProducts(int page, int limit, Sort.Direction direction) {
+        return Mono.fromCallable(() ->
+                super.findAll(page, limit, direction)
+                        .map(this::toDTO)
+        ).subscribeOn(Schedulers.boundedElastic());
     }
 
     private ProductDTO toDTO(Product product) {

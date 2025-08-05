@@ -1,3 +1,5 @@
+######## Enums ########
+
 enum RateInterval {
     PER_HOUR
     PER_DAY
@@ -5,34 +7,46 @@ enum RateInterval {
     PER_MONTH
 }
 
-type ProductCategory {
-    id: String
-    categoryId: String
-    name: String
+enum SortDirection {
+    ASC
+    DESC
 }
+
+######## Inputs ########
 
 input ProductCategoryInput {
     categoryId: String!
     name: String!
 }
 
-type ProductData {
+input ProductInput {
     id: String
     title: String
     description: String
     price: Float
-    productCategoryIds: [String!]
+    productCategoryIds: [String]
     rate: Float
     interval: RateInterval
 }
 
-input ProductInput {
-    title: String!
-    description: String!
-    price: Float!
-    productCategoryIds: [String!]!
-    rate: Float!
-    interval: RateInterval!
+######## Responses ########
+
+type ProductData {
+    id: String!
+    title: String
+    description: String
+    price: Float
+    productCategoryIds: [String]
+    rate: Float
+    interval: RateInterval
+}
+
+type ProductPage {
+    content: [ProductData!]!
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    size: Int!
 }
 
 type ProductResponse {
@@ -40,7 +54,12 @@ type ProductResponse {
     data: ProductData
 }
 
+extend type Query {
+    getAllProducts(page: Int!, limit: Int!, sortDirection: SortDirection): ProductPage!
+}
+
 extend type Mutation {
     addProduct(product: ProductInput!): ProductResponse!
     deleteProduct(id: String!): ProductResponse!
+    updateProduct(product: ProductInput!): ProductResponse!
 }

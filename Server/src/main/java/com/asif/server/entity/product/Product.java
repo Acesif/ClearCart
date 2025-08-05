@@ -31,7 +31,7 @@ public class Product extends BaseEntity {
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -45,5 +45,6 @@ public class Product extends BaseEntity {
     private BigDecimal rate;
 
     @Column(name = "rate_interval")
+    @Enumerated(EnumType.STRING)
     private RateInterval interval;
 }

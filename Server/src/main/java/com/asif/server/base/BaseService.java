@@ -18,12 +18,10 @@ public abstract class BaseService<T extends BaseEntity> {
         return baseRepository.findById(id).orElse(null);
     }
 
-    public Page<T> findAll(int page, int limit) {
-        return baseRepository.findAll(PageRequest.of(page, limit));
-    }
-
-    public Page<T> findAll(int page, int limit, Sort.Direction direction, String... properties) {
-        return baseRepository.findAll(PageRequest.of(page, limit, direction, properties));
+    public Page<T> findAll(int page, int limit, Sort.Direction direction) {
+        return baseRepository.findAllByFlagTrue(
+                PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+        );
     }
     public void deleteAll(){
         baseRepository.deleteAll();
