@@ -29,5 +29,5 @@ spring:
 jwt:
   issuer: 'clearcart'
   audience: 'graphql-clients'
-  expires-minutes: 60
+  expires-minutes: 3600
   hs256-secret: ahahahhahahahahhahahahahhahahahhaha
