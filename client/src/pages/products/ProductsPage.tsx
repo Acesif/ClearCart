@@ -6,21 +6,14 @@ import {GET_PRODUCTS_BY_CATEGORY_QUERY} from "@/graphql/queries/getProductsByCat
 import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
 import ProductList from "@/components/products/ProductList.tsx";
 import {CategoryTypeMapping} from "@/types/CategoryTypeMapping.ts";
+import usePagination from "@/lib/paginationOptions.ts";
 
 const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<ProductCardType[]>([]);
-    const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
 
-    const handlePrevious = () => {
-        setPage((prev) => Math.max(0, prev - 1));
-    };
+    const { page, handlePrevious, handleNext } = usePagination({ maxPage });
 
-    const handleNext = () => {
-        if (page < maxPage) {
-            setPage((prev) => prev + 1);
-        }
-    };
 
     const { categoryId } = useParams();
 

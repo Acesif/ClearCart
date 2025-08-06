@@ -5,21 +5,14 @@ import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
 import ProductList from "@/components/products/ProductList.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
+import usePagination from "@/lib/paginationOptions.ts";
+import {PackagePlusIcon} from "lucide-react";
 
 const MyProductsPage: React.FC = () => {
-    const [myProducts, setmyProducts] = useState<ProductCardType[]>([]);
-    const [page, setPage] = useState(0);
+    const [myProducts, setMyProducts] = useState<ProductCardType[]>([]);
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
 
-    const handlePrevious = () => {
-        setPage((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-        if (page < maxPage) {
-            setPage((prev) => prev + 1);
-        }
-    };
+    const { page, handlePrevious, handleNext } = usePagination({ maxPage });
 
     const { data, loading } = useQuery(GET_ALL_PRODUCTS_QUERY, {
         variables: {
@@ -31,7 +24,7 @@ const MyProductsPage: React.FC = () => {
 
     useEffect(() => {
         if (data?.getAllProducts?.content) {
-            setmyProducts(data.getAllProducts.content);
+            setMyProducts(data.getAllProducts.content);
             setMaxPage(data.getAllProducts.totalPages - 1);
         }
     }, [data]);
@@ -41,24 +34,25 @@ const MyProductsPage: React.FC = () => {
             <h1 className="text-3xl mb-2 text-center">
                 My Products
             </h1>
-            <div className="flex flex-col items-center w-[40%]">
+            {myProducts.length > 0 && (
                 <ProductList
-                    products={myProducts}
-                    loading={loading}
-                    page={page}
-                    maxPage={maxPage}
-                    handlePrevious={handlePrevious}
-                    handleNext={handleNext}
-                />
-                <div className="w-full flex justify-end mt-4">
-                    <Button className="bg-green-800 hover:bg-green-200 hover:text-black cursor-pointer">
-                        <Link to={`/myproducts/create`}>
-                            Add Product
-                        </Link>
-                    </Button>
-                </div>
+                products={myProducts}
+                loading={loading}
+                page={page}
+                maxPage={maxPage}
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+            />)
+            }
+            <div className="w-full flex justify-center mt-4">
+                <Button className="bg-green-800 hover:bg-green-200 hover:text-black cursor-pointer">
+                    <Link to={`/myproducts/create`} className="flex gap-3 items-center">
+                        <PackagePlusIcon />
+                        <span>Add Product</span>
+                    </Link>
+                </Button>
             </div>
-        </div>
+    </div>
     );
 };
 

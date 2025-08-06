@@ -1,6 +1,6 @@
 import {
     LogIn,
-    PackagePlus,
+    Package,
     PackageSearch,
     UserPlus,
 } from "lucide-react"
@@ -14,7 +14,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import {Button} from "@/components/ui/button";
-import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu-trigger-style";
+import {navigationMenuTriggerStyle} from "@/lib/navigationMenuTriggerStyle.ts";
 import {extractUserInformation, handleLogout} from "@/lib/token";
 import {useEffect, useState} from "react";
 import type {UserInformation} from "@/types/UserInformation";
@@ -78,7 +78,7 @@ export function Navbar() {
                         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                             <Button variant="ghost" color="primary">
                                 <Link to="/myproducts" className="flex items-center justify-center gap-2">
-                                    <PackagePlus />
+                                    <Package />
                                     My Products
                                 </Link>
                             </Button>
