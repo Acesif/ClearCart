@@ -52,22 +52,22 @@ export function Navbar() {
                                 <ListItem href="/browse/all" title="Browse All">
                                     Discover all the products available in the marketplace.
                                 </ListItem>
-                                <ListItem href="/browse/electronics" title="Electronics">
+                                <ListItem href="/browse/ELC" title="Electronics">
                                     Find the latest gadgets and electronics.
                                 </ListItem>
-                                <ListItem href="/browse/furniture" title="Furniture">
+                                <ListItem href="/browse/FNT" title="Furniture">
                                     Furnish your home with our wide selection.
                                 </ListItem>
-                                <ListItem href="/browse/home-appliances" title="Home Appliances">
+                                <ListItem href="/browse/HAP" title="Home Appliances">
                                     Upgrade your home with modern appliances.
                                 </ListItem>
-                                <ListItem href="/browse/sporting-goods" title="Sporting Goods">
+                                <ListItem href="/browse/SPG" title="Sporting Goods">
                                     Gear up with our sports equipment and accessories.
                                 </ListItem>
-                                <ListItem href="/browse/outdoor" title="Outdoor">
+                                <ListItem href="/browse/OTD" title="Outdoor">
                                     Explore outdoor gear and equipment for your next adventure.
                                 </ListItem>
-                                <ListItem href="/browse/toys" title="Toys">
+                                <ListItem href="/browse/TOY" title="Toys">
                                     Fun and educational toys for all ages.
                                 </ListItem>
                             </ul>

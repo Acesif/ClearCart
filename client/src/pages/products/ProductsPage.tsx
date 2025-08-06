@@ -1,11 +1,14 @@
 import ProductCard from "@/components/products/ProductCard.tsx";
 import Pagination from "@/components/commons/Pagination.tsx";
 import {useEffect, useState} from "react";
-import type {ProductCardType} from "@/types/ProductCardType.ts";
-import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
 import {useQuery} from "@apollo/client";
+import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
+import type {ProductCardType} from "@/types/ProductCardType.ts";
+import {useParams} from "react-router-dom";
+import {GET_PRODUCTS_BY_CATEGORY_QUERY} from "@/graphql/queries/getProductsByCategory.ts";
+import {CategoryTypeMapping} from "@/types/CategoryTypeMapping.ts";
 
-const ProductsWrapper = () => {
+const ProductsPage = () => {
 
     const [products, setProducts] = useState<ProductCardType[]>([]);
     const [page, setPage] = useState(0);
@@ -21,24 +24,40 @@ const ProductsWrapper = () => {
         }
     };
 
-    const { data, loading } = useQuery(GET_ALL_PRODUCTS_QUERY, {
-        variables: {
-            page: page,
-            limit: 2,
-            sortDirection: 'ASC',
-        },
+    const { categoryId } = useParams();
+
+    const query =
+        categoryId
+            ? GET_PRODUCTS_BY_CATEGORY_QUERY
+            : GET_ALL_PRODUCTS_QUERY;
+
+    const variables =
+        categoryId
+            ? { categoryCode: categoryId, page, limit: 2, sortDirection: 'ASC' }
+            : { page, limit: 2, sortDirection: 'ASC' };
+
+    const { data, loading } = useQuery(query, {
+        variables,
     });
 
     useEffect(() => {
-        if (data?.getAllProducts?.content) {
+        if (categoryId && data?.getByCategory?.content) {
+            setProducts(data.getByCategory.content);
+            setMaxPage(data.getByCategory.totalPages - 1);
+        } else if (!categoryId && data?.getAllProducts?.content) {
             setProducts(data.getAllProducts.content);
             setMaxPage(data.getAllProducts.totalPages - 1);
         }
-    }, [data, setMaxPage]);
+    }, [data, categoryId, setMaxPage]);
+
 
     return (
         <div className="w-full pt-10 flex flex-col items-center justify-center gap-5">
-            <h1 className="text-3xl mb-2">ALL PRODUCTS</h1>
+            <h1 className="text-3xl mb-2">
+                {categoryId && CategoryTypeMapping[categoryId]
+                    ? CategoryTypeMapping[categoryId]
+                    : 'All Products'}
+            </h1>
             <>
                 {loading ? (
                     <div className="mt-50 flex justify-center">
@@ -74,4 +93,4 @@ const ProductsWrapper = () => {
     );
 };
 
-export default ProductsWrapper;
+export default ProductsPage;
