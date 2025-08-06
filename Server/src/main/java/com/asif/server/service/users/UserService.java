@@ -8,6 +8,7 @@ import com.asif.server.entity.auth.Role;
 import com.asif.server.entity.auth.User;
 import com.asif.server.persistence.UserRepository;
 import com.asif.server.service.jwt.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class UserService extends BaseService<User> {
                     User userEntity = user.get();
                     if (!encoder.matches(loginInput.password(), userEntity.getPassword())) {
                         return GenericResponse.<AuthPayload>builder()
-                                .message("Incorrect password")
+                                .message("Incorrect credentials")
                                 .data(null)
                                 .build();
                     }
