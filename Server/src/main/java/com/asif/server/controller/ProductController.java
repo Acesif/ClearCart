@@ -50,4 +50,15 @@ public class ProductController {
         Sort.Direction sortDir = direction != null ? direction : Sort.Direction.ASC;
         return productService.getAllProducts(page, limit, sortDir);
     }
+
+    @QueryMapping
+    public Mono<Page<ProductDTO>> getByCategory(
+            @Argument int page,
+            @Argument int limit,
+            @Argument String categoryCode,
+            @Argument(name = "sortDirection") Sort.Direction direction
+    ) {
+        Sort.Direction sortDir = direction != null ? direction : Sort.Direction.ASC;
+        return productService.getAllProductsByCategory(page, limit, sortDir, categoryCode);
+    }
 }

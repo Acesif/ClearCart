@@ -8,9 +8,11 @@ import com.asif.server.dto.product.ProductDTO;
 import com.asif.server.entity.product.Product;
 import com.asif.server.entity.product.ProductCategory;
 import com.asif.server.persistence.ProductCategoryRepository;
+import com.asif.server.persistence.ProductRepository;
 import com.asif.server.persistence.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.asif.server.utils.ExtractAuth.extractUserInformation;
@@ -29,11 +29,13 @@ public class ProductService extends BaseService<Product> {
 
     private final UserRepository userRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final ProductRepository productRepository;
 
-    public ProductService(BaseRepository<Product> baseRepository, UserRepository userRepository, ProductCategoryRepository productCategoryRepository) {
+    public ProductService(BaseRepository<Product> baseRepository, UserRepository userRepository, ProductCategoryRepository productCategoryRepository, ProductRepository productRepository) {
         super(baseRepository);
         this.userRepository = userRepository;
         this.productCategoryRepository = productCategoryRepository;
+        this.productRepository = productRepository;
     }
 
     public Mono<GenericResponse<ProductDTO>> createProduct(ProductDTO product, Authentication authentication) {
@@ -128,28 +130,42 @@ public class ProductService extends BaseService<Product> {
     public Mono<Page<ProductDTO>> getAllProducts(int page, int limit, Sort.Direction direction) {
         return Mono.fromCallable(() -> {
                 Page<Product> productPage = super.findAll(page, limit, direction);
-                List<ProductDTO> products = productPage.getContent().stream()
-                        .map(product -> {
-                            List<String> categoryNames = product.getProductCategory()
-                                    .stream()
-                                    .map(ProductCategory::getName)
-                                    .toList();
-
-                            return ProductDTO.builder()
-                                    .id(product.getId())
-                                    .title(product.getTitle())
-                                    .description(product.getDescription())
-                                    .price(product.getPrice())
-                                    .productCategoryIds(categoryNames)
-                                    .rate(product.getRate())
-                                    .interval(product.getInterval())
-                                    .isDraft(product.getIsDraft())
-                                    .build();
-                        })
-                        .filter(p -> !p.isDraft())
-                        .toList();
-            return (Page<ProductDTO>) new PageImpl<>(products, productPage.getPageable(), productPage.getTotalElements());
+            return getProductDTOS(productPage);
         }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Mono<Page<ProductDTO>> getAllProductsByCategory(int page, int limit, Sort.Direction direction, String category) {
+        return Mono.fromCallable(() -> {
+            Page<Product> productPage = productRepository.findAllByProductCategory(
+                    category,
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+            );
+            return getProductDTOS(productPage);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Page<ProductDTO> getProductDTOS(Page<Product> productPage) {
+        List<ProductDTO> products = productPage.getContent().stream()
+                .map(product -> {
+                    List<String> categoryNames = product.getProductCategory()
+                            .stream()
+                            .map(ProductCategory::getName)
+                            .toList();
+
+                    return ProductDTO.builder()
+                            .id(product.getId())
+                            .title(product.getTitle())
+                            .description(product.getDescription())
+                            .price(product.getPrice())
+                            .productCategoryIds(categoryNames)
+                            .rate(product.getRate())
+                            .interval(product.getInterval())
+                            .isDraft(product.getIsDraft())
+                            .build();
+                })
+                .filter(p -> !p.isDraft())
+                .toList();
+        return new PageImpl<>(products, productPage.getPageable(), productPage.getTotalElements());
     }
 
     private ProductDTO toDTO(Product product) {

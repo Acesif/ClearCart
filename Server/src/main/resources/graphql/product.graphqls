@@ -12,6 +12,15 @@ enum SortDirection {
     DESC
 }
 
+enum CategoryCode {
+    ELC
+    FNT
+    HAP
+    SPG
+    OTD
+    TOY
+}
+
 ######## Inputs ########
 
 input ProductCategoryInput {
@@ -57,6 +66,7 @@ type ProductResponse {
 
 extend type Query {
     getAllProducts(page: Int!, limit: Int!, sortDirection: SortDirection): ProductPage!
+    getByCategory(page: Int!, limit: Int!, sortDirection: SortDirection, categoryCode: CategoryCode!): ProductPage!
 }
 
 extend type Mutation {
