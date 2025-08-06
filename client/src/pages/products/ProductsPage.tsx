@@ -1,15 +1,13 @@
-import ProductCard from "@/components/products/ProductCard.tsx";
-import Pagination from "@/components/commons/Pagination.tsx";
-import {useEffect, useState} from "react";
-import {useQuery} from "@apollo/client";
-import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
-import {useParams} from "react-router-dom";
 import {GET_PRODUCTS_BY_CATEGORY_QUERY} from "@/graphql/queries/getProductsByCategory.ts";
+import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/getAllProducts.ts";
+import ProductList from "@/components/products/ProductList.tsx";
 import {CategoryTypeMapping} from "@/types/CategoryTypeMapping.ts";
 
-const ProductsPage = () => {
-
+const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<ProductCardType[]>([]);
     const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
@@ -26,15 +24,11 @@ const ProductsPage = () => {
 
     const { categoryId } = useParams();
 
-    const query =
-        categoryId
-            ? GET_PRODUCTS_BY_CATEGORY_QUERY
-            : GET_ALL_PRODUCTS_QUERY;
+    const query = categoryId ? GET_PRODUCTS_BY_CATEGORY_QUERY : GET_ALL_PRODUCTS_QUERY;
 
-    const variables =
-        categoryId
-            ? { categoryCode: categoryId, page, limit: 2, sortDirection: 'ASC' }
-            : { page, limit: 2, sortDirection: 'ASC' };
+    const variables = categoryId
+        ? { categoryCode: categoryId, page, limit: 2, sortDirection: 'ASC' }
+        : { page, limit: 2, sortDirection: 'ASC' };
 
     const { data, loading } = useQuery(query, {
         variables,
@@ -48,47 +42,23 @@ const ProductsPage = () => {
             setProducts(data.getAllProducts.content);
             setMaxPage(data.getAllProducts.totalPages - 1);
         }
-    }, [data, categoryId, setMaxPage]);
-
+    }, [data, categoryId]);
 
     return (
-        <div className="w-full pt-10 flex flex-col items-center justify-center gap-5">
-            <h1 className="text-3xl mb-2">
+        <div className="mt-15">
+            <h1 className="text-3xl mb-2 text-center">
                 {categoryId && CategoryTypeMapping[categoryId]
                     ? CategoryTypeMapping[categoryId]
                     : 'All Products'}
             </h1>
-            <>
-                {loading ? (
-                    <div className="mt-50 flex justify-center">
-                        <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-gray-300" />
-                    </div>
-                ) : (
-                    products.length > 0 ? (
-                        <>
-                            {products?.map((product: ProductCardType) => (
-                                <ProductCard
-                                    key={product.id}
-                                    id={product.id}
-                                    title={product.title}
-                                    description={product.description}
-                                    price={product.price}
-                                    productCategoryIds={product.productCategoryIds}
-                                    rate={product.rate}
-                                    interval={product.interval}
-                                />
-                            ))}
-                        </>
-                    ) : (
-                        <>
-                            <div className="text-red-700 mt-70">No products found</div>
-                        </>
-                    )
-                )}
-            </>
-            <div className="absolute bottom-20">
-                <Pagination initialPage={page} handlePrevious={handlePrevious} handleNext={handleNext} />
-            </div>
+            <ProductList
+                products={products}
+                loading={loading}
+                page={page}
+                maxPage={maxPage}
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+            />
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import {
     LogIn,
+    PackagePlus,
     PackageSearch,
-    Upload,
     UserPlus,
 } from "lucide-react"
 
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import {Button} from "@/components/ui/button";
 import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu-trigger-style";
-import {extractUserInformation} from "@/lib/token";
+import {extractUserInformation, handleLogout} from "@/lib/token";
 import {useEffect, useState} from "react";
 import type {UserInformation} from "@/types/UserInformation";
 import {Link} from "react-router-dom";
@@ -77,9 +77,9 @@ export function Navbar() {
                     <NavigationMenuItem>
                         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                             <Button variant="ghost" color="primary">
-                                <Link to="/upload" className="flex items-center justify-center gap-2">
-                                    <Upload />
-                                    Upload Product
+                                <Link to="/myproducts" className="flex items-center justify-center gap-2">
+                                    <PackagePlus />
+                                    My Products
                                 </Link>
                             </Button>
                         </NavigationMenuLink>
@@ -108,7 +108,7 @@ export function Navbar() {
                             </div>
                         </>
                     ) : (
-                        <div>
+                        <div className="flex gap-5">
                             <Button
                                 variant="outline"
                                 className="bg-amber-50 cursor-pointer"
@@ -116,6 +116,13 @@ export function Navbar() {
                                 <Link to="/me">
                                     My Account
                                 </Link>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="bg-red-400 cursor-pointer text-white hover:text-red-400"
+                                onClick={handleLogout}
+                            >
+                                Logout
                             </Button>
                         </div>
                     )}

@@ -1,11 +1,12 @@
-import type {UserInformation} from "@/types/UserInformation.ts";
+import type { UserInformation } from "@/types/UserInformation.ts";
 
 export function saveToken(token: string) {
     localStorage.setItem('accessToken', token);
 }
 
-export function removeToken() {
+export function handleLogout() {
     localStorage.removeItem('accessToken');
+    window.location.replace('/');
 }
 
 export function extractUserInformation(): UserInformation | null {

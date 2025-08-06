@@ -5,6 +5,8 @@ import HeroSection from "@/components/commons/HeroSection.tsx";
 import ProductsPage from "@/pages/products/ProductsPage.tsx";
 import ProtectedRoute from "@/components/auth/ProtectedRoutes.tsx";
 import UserProfile from "@/pages/auth/UserProfile.tsx";
+import MyProductsPage from "@/pages/products/MyProductsPage.tsx";
+import CreateProductForm from "@/components/products/CreateProductForm.tsx";
 
 const AppRoutes = () => (
     <Routes>
@@ -24,6 +26,16 @@ const AppRoutes = () => (
         <Route path="/me" element={
             <ProtectedRoute>
                 <UserProfile />
+            </ProtectedRoute>
+        } />
+        <Route path="/myproducts" element={
+            <ProtectedRoute>
+                <MyProductsPage />
+            </ProtectedRoute>
+        } />
+        <Route path="/myproducts/create" element={
+            <ProtectedRoute>
+                <CreateProductForm />
             </ProtectedRoute>
         } />
     </Routes>

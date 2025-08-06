@@ -38,12 +38,14 @@ const Signup = () => {
             const email = data?.signUp?.data?.email;
 
             if (email) {
-                toast("Successfully registered user", { description: email });
+                toast(data?.signUp?.message);
                 navigate("/login");
+            } else {
+                toast(data?.signUp?.message);
             }
 
-        } catch (err: any) {
-            console.error("Sign up error:", err.message);
+        } catch (err) {
+            console.error("Sign up error:", err);
             toast("Sign up failed.");
         }
     };

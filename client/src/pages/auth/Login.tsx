@@ -29,14 +29,14 @@ const Login = () => {
 
             if (token) {
                 saveToken(token);
-                toast(`Login successful`);
+                toast.success(data?.login?.message);
                 navigate("/");
             } else {
-                toast('Login failed: No token returned');
+                toast.error(data?.login?.message);
             }
         } catch (err: any) {
             console.error('Login error:', err.message);
-            toast('Login failed. Please check your credentials.');
+            toast('Login failed.');
         }
     };
 
