@@ -16,6 +16,11 @@ export function extractUserInformation(): UserInformation | null {
         const payloadBase64 = token.split(".")[1];
         const decodedPayload = JSON.parse(atob(payloadBase64));
 
+        if (decodedPayload.exp * 1000 <= Date.now()) {
+            localStorage.removeItem("accessToken");
+            return null;
+        }
+
         return {
             userId: decodedPayload.sub,
             roles: decodedPayload.roles ?? [""],

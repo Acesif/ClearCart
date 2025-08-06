@@ -1,9 +1,7 @@
 import {
-    Handshake,
     LogIn,
     PackageSearch,
-    ShoppingBag,
-    Tag,
+    Upload,
     UserPlus,
 } from "lucide-react"
 
@@ -30,7 +28,6 @@ export function Navbar() {
 
     useEffect(() => {
         const userInformation: UserInformation | null = extractUserInformation();
-        console.log(userInformation);
         setSession(userInformation);
     }, [setSession]);
 
@@ -45,13 +42,16 @@ export function Navbar() {
                                 <div className="flex items-center justify-center gap-2">
                                     <PackageSearch />
                                     <Link to="/browse/all">
-                                        Browse
+                                        Discover
                                     </Link>
                                 </div>
                             </Button>
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                                <ListItem href="/browse/all" title="Browse All">
+                                    Discover all the products available in the marketplace.
+                                </ListItem>
                                 <ListItem href="/browse/electronics" title="Electronics">
                                     Find the latest gadgets and electronics.
                                 </ListItem>
@@ -77,31 +77,9 @@ export function Navbar() {
                     <NavigationMenuItem>
                         <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                             <Button variant="ghost" color="primary">
-                                <Link to="/rent" className="flex items-center justify-center gap-2">
-                                    <Handshake />
-                                    Rent Items
-                                </Link>
-                            </Button>
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-
-                    <NavigationMenuItem>
-                        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                            <Button variant="ghost" color="primary">
-                                <Link to="/sell" className="flex items-center justify-center gap-2">
-                                    <Tag />
-                                    Sell Items
-                                </Link>
-                            </Button>
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-
-                    <NavigationMenuItem>
-                        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                            <Button variant="ghost" color="primary">
-                                <Link to="/buy" className="flex items-center justify-center gap-2">
-                                    <ShoppingBag />
-                                    Buy Items
+                                <Link to="/upload" className="flex items-center justify-center gap-2">
+                                    <Upload />
+                                    Upload Product
                                 </Link>
                             </Button>
                         </NavigationMenuLink>

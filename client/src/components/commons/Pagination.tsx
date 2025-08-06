@@ -5,22 +5,14 @@ import {
     PaginationPrevious,
     Paging
 } from "@/components/ui/paging";
-import {useState} from "react";
 
 type PaginationProps = {
-    initialPage?: number;
+    initialPage: number;
+    handlePrevious: () => void;
+    handleNext: () => void;
 };
 
-const Pagination = ({ initialPage = 1 }: PaginationProps) => {
-    const [page, setPage] = useState(initialPage);
-
-    const handlePrevious = () => {
-        setPage((prev) => Math.max(1, prev - 1));
-    };
-
-    const handleNext = () => {
-        setPage((prev) => prev + 1);
-    };
+const Pagination = ({ initialPage, handlePrevious, handleNext }: PaginationProps) => {
 
     return (
         <Paging>
@@ -29,7 +21,7 @@ const Pagination = ({ initialPage = 1 }: PaginationProps) => {
                     <PaginationPrevious className="cursor-pointer" onClick={handlePrevious} />
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationLink className="cursor-pointer">{page}</PaginationLink>
+                    <PaginationLink className="cursor-pointer">{initialPage + 1}</PaginationLink>
                 </PaginationItem>
                 <PaginationItem>
                     <PaginationNext className="cursor-pointer" onClick={handleNext} />
