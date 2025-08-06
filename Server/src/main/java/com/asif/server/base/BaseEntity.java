@@ -2,10 +2,7 @@ package com.asif.server.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,6 +36,7 @@ public abstract class BaseEntity implements Serializable {
     @UpdateTimestamp
     protected Date updateDate;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    protected Boolean flag;
+    @Column(nullable = false)
+    @Builder.Default
+    protected Boolean flag = true;
 }

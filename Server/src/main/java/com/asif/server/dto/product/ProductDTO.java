@@ -1,8 +1,10 @@
 package com.asif.server.dto.product;
 
 import lombok.Builder;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -11,8 +13,9 @@ public record ProductDTO(
         String title,
         String description,
         BigDecimal price,
-        Set<String> productCategoryIds,
+        List<String> productCategoryIds,
         BigDecimal rate,
-        RateInterval interval
+        RateInterval interval,
+        Boolean isDraft
 ) {}
 

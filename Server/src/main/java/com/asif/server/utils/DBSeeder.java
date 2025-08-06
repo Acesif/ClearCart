@@ -28,11 +28,9 @@ public class DBSeeder {
         if (roleRepository.findAll().isEmpty()) {
             List<Role> roleList = List.of(
                     Role.builder()
-                            .flag(true)
                             .name("ROLE_ADMIN")
                             .build(),
                     Role.builder()
-                            .flag(true)
                             .name("ROLE_USER")
                             .build()
             );
@@ -44,32 +42,26 @@ public class DBSeeder {
         if (productCategoryRepository.findAll().isEmpty()) {
             List<ProductCategory> categories = List.of(
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("ELC")
                             .name("Electronics")
                             .build(),
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("FNT")
                             .name("Furniture")
                             .build(),
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("HAP")
                             .name("Home Appliances")
                             .build(),
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("SPG")
                             .name("Sporting Goods")
                             .build(),
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("OTD")
                             .name("Outdoor")
                             .build(),
                     ProductCategory.builder()
-                            .flag(true)
                             .categoryId("TOY")
                             .name("Toys")
                             .build()

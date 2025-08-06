@@ -10,6 +10,7 @@ import com.asif.server.entity.product.ProductCategory;
 import com.asif.server.persistence.ProductCategoryRepository;
 import com.asif.server.persistence.UserRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,6 @@ public class ProductService extends BaseService<Product> {
             List<ProductCategory> categories = productCategoryRepository.findAllByCategoryIds(product.productCategoryIds());
 
             Product toSave = Product.builder()
-                    .flag(true)
                     .title(product.title())
                     .price(product.price())
                     .description(product.description())
@@ -79,6 +80,7 @@ public class ProductService extends BaseService<Product> {
                 toUpdate.setOwner(toUpdate.getOwner());
                 toUpdate.setRate(product.rate());
                 toUpdate.setInterval(product.interval());
+                toUpdate.setIsDraft(product.isDraft());
 
                 Product updated = super.update(toUpdate);
                 ProductDTO response = toDTO(updated);
@@ -124,10 +126,30 @@ public class ProductService extends BaseService<Product> {
     }
 
     public Mono<Page<ProductDTO>> getAllProducts(int page, int limit, Sort.Direction direction) {
-        return Mono.fromCallable(() ->
-                super.findAll(page, limit, direction)
-                        .map(this::toDTO)
-        ).subscribeOn(Schedulers.boundedElastic());
+        return Mono.fromCallable(() -> {
+                Page<Product> productPage = super.findAll(page, limit, direction);
+                List<ProductDTO> products = productPage.getContent().stream()
+                        .map(product -> {
+                            List<String> categoryNames = product.getProductCategory()
+                                    .stream()
+                                    .map(ProductCategory::getName)
+                                    .toList();
+
+                            return ProductDTO.builder()
+                                    .id(product.getId())
+                                    .title(product.getTitle())
+                                    .description(product.getDescription())
+                                    .price(product.getPrice())
+                                    .productCategoryIds(categoryNames)
+                                    .rate(product.getRate())
+                                    .interval(product.getInterval())
+                                    .isDraft(product.getIsDraft())
+                                    .build();
+                        })
+                        .filter(p -> !p.isDraft())
+                        .toList();
+            return (Page<ProductDTO>) new PageImpl<>(products, productPage.getPageable(), productPage.getTotalElements());
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     private ProductDTO toDTO(Product product) {
@@ -139,8 +161,8 @@ public class ProductService extends BaseService<Product> {
                 .productCategoryIds(product.getProductCategory() != null
                         ? product.getProductCategory().stream()
                         .map(ProductCategory::getId)
-                        .collect(Collectors.toSet())
-                        : Set.of())
+                        .collect(Collectors.toList())
+                        : List.of())
                 .rate(product.getRate())
                 .interval(product.getInterval())
                 .build();

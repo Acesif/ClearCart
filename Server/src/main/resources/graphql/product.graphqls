@@ -27,6 +27,7 @@ input ProductInput {
     productCategoryIds: [String]
     rate: Float
     interval: RateInterval
+    isDraft: Boolean
 }
 
 ######## Responses ########

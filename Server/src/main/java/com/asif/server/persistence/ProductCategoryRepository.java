@@ -12,5 +12,5 @@ public interface ProductCategoryRepository extends BaseRepository<ProductCategor
 
 
     @Query("SELECT pc FROM ProductCategory pc WHERE pc.categoryId IN :categoryIds")
-    List<ProductCategory> findAllByCategoryIds(@Param("categoryIds") Set<String> categoryIds);
+    List<ProductCategory> findAllByCategoryIds(@Param("categoryIds") List<String> categoryIds);
 }

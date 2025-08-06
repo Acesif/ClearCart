@@ -14,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
-import java.security.Principal;
-
 @Controller
 @RequiredArgsConstructor
 public class ProductController {

@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @QueryMapping
-    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<UserDTO>> user(Authentication authentication) {
         return userService.getMyInfo(authentication);
     }

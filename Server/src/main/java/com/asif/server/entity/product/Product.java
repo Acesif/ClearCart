@@ -4,10 +4,7 @@ import com.asif.server.base.BaseEntity;
 import com.asif.server.dto.product.RateInterval;
 import com.asif.server.entity.auth.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -47,4 +44,8 @@ public class Product extends BaseEntity {
     @Column(name = "rate_interval")
     @Enumerated(EnumType.STRING)
     private RateInterval interval;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isDraft = true;
 }

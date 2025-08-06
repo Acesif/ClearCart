@@ -60,7 +60,6 @@ public class UserService extends BaseService<User> {
                         .address(signUpInput.address())
                         .email(signUpInput.email())
                         .password(encoder.encode(signUpInput.password()))
-                        .flag(true)
                         .build();
 
                 return roleService.getRoleByName("ROLE_USER")
