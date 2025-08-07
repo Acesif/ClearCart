@@ -8,13 +8,25 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends BaseRepository<Product> {
-
-    @Query("""
-        SELECT p
-        FROM Product p
-        JOIN p.productCategory c
-        WHERE c.categoryId = :productCategory
-    """)
-    Page<Product> findAllByProductCategory(@Param("productCategory") String productCategory, Pageable pageable);
-
+    @Query(
+            value = """
+        SELECT p.*
+        FROM products p
+        JOIN product_category pc ON p.id = pc.product_id
+        JOIN product_categories c ON c.category_id = pc.category_id
+        WHERE c.category_id = :productCategory
+    """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM products p
+        JOIN product_category pc ON p.id = pc.product_id
+        JOIN product_categories c ON c.category_id = pc.category_id
+        WHERE c.category_id = :productCategory
+    """,
+            nativeQuery = true
+    )
+    Page<Product> findAllByProductCategory(
+            @Param("productCategory") String productCategory,
+            Pageable pageable
+    );
 }
