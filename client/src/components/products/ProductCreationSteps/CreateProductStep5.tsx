@@ -6,8 +6,8 @@ interface Step5Props {
     title: string;
     description: string;
     selectedCategories: string[];
-    price: string;
-    rentAmount: string;
+    price: number;
+    rentAmount: number;
     rentOption: string;
 }
 

@@ -1,16 +1,16 @@
-import React, {useEffect} from "react";
-import {useProductContext} from "@/components/context/ProductContext.tsx";
+import {type Dispatch, type SetStateAction, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {useProductStore} from "@/store/productStore.ts";
 
 interface Step1Props {
     onNext: () => void;
     title: string;
-    setTitle: React.Dispatch<React.SetStateAction<string>>;
+    setTitle: Dispatch<SetStateAction<string>>;
 }
 
 function CreateProductStep1({ onNext, title, setTitle }: Step1Props) {
 
-    const { createdProductId } = useProductContext();
+    const { createdProductId } = useProductStore();
     const navigate = useNavigate();
 
     useEffect(() => {

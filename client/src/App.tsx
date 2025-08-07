@@ -11,7 +11,6 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { Toaster } from "sonner";
 import {getToken} from "@/lib/token.ts";
-import {ProductProvider} from "@/components/context/ProductContext.tsx";
 
 function App() {
     const httpLink = new HttpLink({
@@ -36,10 +35,8 @@ function App() {
     return (
         <ApolloProvider client={client}>
             <BrowserRouter>
-                <ProductProvider>
-                    <Home />
-                    <Toaster />
-                </ProductProvider>
+                <Home />
+                <Toaster />
             </BrowserRouter>
         </ApolloProvider>
     );

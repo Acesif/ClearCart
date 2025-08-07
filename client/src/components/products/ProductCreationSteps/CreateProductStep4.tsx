@@ -1,14 +1,15 @@
-import React from "react";
+import type {Dispatch, SetStateAction} from "react";
+import {type RateInterval, RateIntervals} from "@/types/RateInterval.ts";
 
 interface Step4Props {
     onBack: () => void;
     onNext: () => void;
-    price: string;
-    setPrice: React.Dispatch<React.SetStateAction<string>>;
-    rentAmount: string;
-    setRentAmount: React.Dispatch<React.SetStateAction<string>>;
+    price: number;
+    setPrice: Dispatch<SetStateAction<number>>;
+    rentAmount: number;
+    setRentAmount: Dispatch<SetStateAction<number>>;
     rentOption: string;
-    setRentOption: React.Dispatch<React.SetStateAction<string>>;
+    setRentOption: Dispatch<SetStateAction<RateInterval>>;
 }
 
 function CreateProductStep4({
@@ -29,7 +30,7 @@ function CreateProductStep4({
                 type="number"
                 placeholder="Purchase price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => setPrice(Number.parseInt(e.target.value))}
                 className="w-full p-4 text-lg text-gray-800 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 mb-4"
             />
             <div className="flex space-x-4">
@@ -39,7 +40,7 @@ function CreateProductStep4({
                         type="number"
                         placeholder="Rent"
                         value={rentAmount}
-                        onChange={(e) => setRentAmount(e.target.value)}
+                        onChange={(e) => setRentAmount(Number.parseInt(e.target.value))}
                         className="w-full p-4 text-lg text-gray-800 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                     />
                 </div>
@@ -47,12 +48,15 @@ function CreateProductStep4({
                     <label className="block text-gray-800">Select option</label>
                     <select
                         value={rentOption}
-                        onChange={(e) => setRentOption(e.target.value)}
+                        onChange={(e) => setRentOption(e.target.value as RateInterval)}
                         className="w-full p-4 text-lg text-gray-800 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                     >
-                        <option value="">Select option</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
+                        <option value="" disabled={true}>Select option</option>
+                        {Object.values(RateIntervals).map((interval) => (
+                            <option key={interval} value={interval}>
+                                {interval.replace('_', ' ').toUpperCase()}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>

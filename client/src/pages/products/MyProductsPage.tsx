@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
 import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/products/getAllProducts.ts";
+import {ADD_PRODUCT_MUTATION} from "@/graphql/mutations/products/addProduct.ts";
 import ProductList from "@/components/products/ProductList.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
 import usePagination from "@/lib/paginationOptions.ts";
 import {PackagePlusIcon} from "lucide-react";
-import {ADD_PRODUCT_MUTATION} from "@/graphql/mutations/products/addProduct.ts";
 import Loader from "@/components/commons/Loader.tsx";
 import {toast} from "sonner";
-import {useProductContext} from "@/components/context/ProductContext.tsx";
+import {useProductStore} from "@/store/productStore.ts";
 
 const MyProductsPage: React.FC = () => {
     const [myProducts, setMyProducts] = useState<ProductCardType[]>([]);
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
-    const { createdProductId, setCreatedProductId } = useProductContext();
+    const { createdProductId, setCreatedProductId } = useProductStore();
     const [productCreationStatus, setProductCreationStatus] = useState(false);
     const { page, handlePrevious, handleNext } = usePagination({ maxPage });
     const navigate = useNavigate();

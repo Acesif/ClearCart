@@ -1,29 +1,32 @@
-import React, { useState } from 'react';
-import type {FormData} from "@/types/FormData.ts";
 import CreateProductStep1 from "@/components/products/ProductCreationSteps/CreateProductStep1.tsx";
 import CreateProductStep2 from "@/components/products/ProductCreationSteps/CreateProductStep2.tsx";
 import CreateProductStep3 from "@/components/products/ProductCreationSteps/CreateProductStep3.tsx";
 import CreateProductStep4 from "@/components/products/ProductCreationSteps/CreateProductStep4.tsx";
 import CreateProductStep5 from "@/components/products/ProductCreationSteps/CreateProductStep5.tsx";
+import type {createProductFormProps} from "@/types/createProductFormProps.ts";
 
-const CreateProductForm: React.FC = () => {
-    const [step, setStep] = useState(1);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [categories] = useState<string[]>(['Electronics', 'Furniture', 'Clothing', 'Accessories']);
-    const [price, setPrice] = useState('');
-    const [rentAmount, setRentAmount] = useState('');
-    const [rentOption, setRentOption] = useState('');
 
-    const handleNext = () => setStep((prevStep) => prevStep + 1);
-    const handleBack = () => setStep((prevStep) => prevStep - 1);
+function CreateProductForm({
+   step,
+   title,
+   description,
+   setTitle,
+   setDescription,
+   handleNext,
+   handleBack,
+   handleSubmit,
+   selectedCategories,
+   setSelectedCategories,
+   categories,
+   price,
+   setPrice,
+   rentAmount,
+   setRentAmount,
+   rentOption,
+   setRentOption
+}: createProductFormProps) {
 
-    const handleSubmit = (formData: FormData) => {
-        console.log('Form Submitted:', formData);
-    };
-
-    return (
+   return (
         <div className="flex flex-col items-center justify-center h-[80vh] w-screen">
             {step === 1 && (
                 <CreateProductStep1
@@ -75,6 +78,6 @@ const CreateProductForm: React.FC = () => {
             )}
         </div>
     );
-};
+}
 
 export default CreateProductForm;

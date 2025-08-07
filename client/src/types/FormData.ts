@@ -1,8 +1,8 @@
-export interface FormData {
+export type FormData = {
     title: string;
     description: string;
     selectedCategories: string[];
-    price: string;
-    rentAmount: string;
+    price: number;
+    rentAmount: number;
     rentOption: string;
 }
