@@ -1,10 +1,12 @@
 import CreateProductForm from "@/components/products/CreateProductForm.tsx";
 import type {FormData} from "@/types/FormData.ts";
-import {useState} from "react";
-import {useMutation} from "@apollo/client";
+import {useEffect, useState} from "react";
+import {useMutation, useQuery} from "@apollo/client";
 import UPDATE_PRODUCT_MUTATION from "@/graphql/mutations/products/updateProduct.ts";
 import {useProductStore} from "@/store/productStore.ts";
 import {type RateInterval, RateIntervals} from "@/types/RateInterval.ts";
+import GET_CATEGORIES_QUERY from "@/graphql/queries/products/getAllCategories.ts";
+import {useNavigate} from "react-router-dom";
 
 const AddProductPage = () => {
 
@@ -18,8 +20,10 @@ const AddProductPage = () => {
     const { createdProductId } = useProductStore();
 
     const [updateProduct] = useMutation(UPDATE_PRODUCT_MUTATION);
+    const { data } = useQuery(GET_CATEGORIES_QUERY);
+    const navigate = useNavigate();
 
-    const [categories] = useState<string[]>(['Electronics', 'Furniture', 'Clothing', 'Accessories']);
+    const [categories, setCategories] = useState<string[]>([]);
 
     const handleNext = async () => {
         await updateProduct({
@@ -38,10 +42,22 @@ const AddProductPage = () => {
 
     const handleBack = () => setStep((prevStep) => prevStep - 1);
 
-    const handleSubmit = (formData: FormData) => {
+    const handleSubmit = async (formData: FormData) => {
+        await updateProduct({
+            variables: {
+                id: createdProductId,
+                isDraft: false
+            },
+        });
         console.log('Form Submitted:', formData);
+        navigate("/myproducts");
     };
 
+    useEffect(() => {
+        if (data?.getAllCategories) {
+            setCategories(data.getAllCategories);
+        }
+    }, [data]);
 
     return (
         <CreateProductForm

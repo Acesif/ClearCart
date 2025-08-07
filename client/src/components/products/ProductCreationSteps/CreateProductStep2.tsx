@@ -1,4 +1,7 @@
 import React from "react";
+import {CategoryTypeMapping} from "@/types/CategoryTypeMapping.ts";
+import Select from "react-select";
+import {buttonStyle} from "@/styles/buttonStyle.ts";
 
 interface Step2Props {
     onBack: () => void;
@@ -15,34 +18,41 @@ function CreateProductStep2({
                    selectedCategories,
                    setSelectedCategories,
                }: Step2Props) {
+
+    const formattedCategories = categories.map(category => ({
+        value: category,
+        label: CategoryTypeMapping[category]
+    }));
+
+    const isInValid = (): boolean => {
+        return selectedCategories.length === 0;
+    }
+
     return (
         <div className="bg-gray-100 p-8 rounded-lg w-[50%] mx-auto">
             <h2 className="text-xl font-semibold mb-4">Select categories</h2>
-            <select
-                multiple
-                value={selectedCategories}
-                onChange={(e) =>
-                    setSelectedCategories([...e.target.selectedOptions].map((o) => o.value))
-                }
-                className="w-full p-4 text-lg text-gray-800 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
-            >
-                {categories.map((category, idx) => (
-                    <option key={idx} value={category}>
-                        {category}
-                    </option>
-                ))}
-            </select>
+            <Select
+                isMulti
+                value={formattedCategories.filter(option => selectedCategories.includes(option.value))}
+                onChange={selectedOptions => setSelectedCategories(selectedOptions ? selectedOptions.map(option => option.value) : [])}
+                options={formattedCategories}
+                closeMenuOnSelect={false}
+                placeholder="Select categories"
+                className="w-full"
+                classNamePrefix="react-select"
+            />
             <p className="text-sm text-gray-500 mt-2">NOTE: Hold CTRL to select multiple items</p>
             <div className="flex justify-between mt-4">
                 <button
                     onClick={onBack}
-                    className="bg-indigo-500 text-white py-2 px-6 rounded-lg hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className={buttonStyle(false)}
                 >
                     Back
                 </button>
                 <button
+                    disabled={isInValid()}
                     onClick={onNext}
-                    className="bg-indigo-500 text-white py-2 px-6 rounded-lg hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className={buttonStyle(isInValid())}
                 >
                     Next
                 </button>

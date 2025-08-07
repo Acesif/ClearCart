@@ -1,6 +1,7 @@
 import {type Dispatch, type SetStateAction, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {useProductStore} from "@/store/productStore.ts";
+import {buttonStyle} from "@/styles/buttonStyle.ts";
 
 interface Step1Props {
     onNext: () => void;
@@ -19,6 +20,10 @@ function CreateProductStep1({ onNext, title, setTitle }: Step1Props) {
         }
     })
 
+    const isInValid = (): boolean => {
+        return title.trim() === ''
+    }
+
     return (
         <div className="bg-gray-100 p-8 rounded-lg w-[50%] mx-auto flex flex-col">
             <h2 className="text-xl font-semibold mb-2">Select a title for your product</h2>
@@ -31,8 +36,9 @@ function CreateProductStep1({ onNext, title, setTitle }: Step1Props) {
                 placeholder="Enter product title"
             />
             <button
+                disabled={isInValid()}
                 onClick={onNext}
-                className="mt-4 bg-indigo-500 text-white py-2 px-6 rounded-lg hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 self-end"
+                className={buttonStyle(isInValid())}
             >
                 Next
             </button>

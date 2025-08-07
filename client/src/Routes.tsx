@@ -7,12 +7,15 @@ import ProtectedRoute from "@/components/auth/ProtectedRoutes.tsx";
 import UserProfile from "@/pages/auth/UserProfile.tsx";
 import MyProductsPage from "@/pages/products/MyProductsPage.tsx";
 import AddProductPage from "@/pages/products/AddProductPage.tsx";
+import ProductPage from "@/pages/products/ProductPage.tsx";
+import NotFound from "@/components/commons/404.tsx";
 
 const AppRoutes = () => (
     <Routes>
         <Route path="/" element={<HeroSection />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/404" element={<NotFound />} />
         <Route path="/browse/all" element={
             <ProtectedRoute>
                 <ProductsPage />
@@ -36,6 +39,11 @@ const AppRoutes = () => (
         <Route path="/myproducts/create" element={
             <ProtectedRoute>
                 <AddProductPage />
+            </ProtectedRoute>
+        } />
+        <Route path="/products/:productId" element={
+            <ProtectedRoute>
+                <ProductPage />
             </ProtectedRoute>
         } />
     </Routes>

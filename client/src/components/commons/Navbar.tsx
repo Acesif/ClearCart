@@ -14,7 +14,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import {Button} from "@/components/ui/button";
-import {navigationMenuTriggerStyle} from "@/lib/navigationMenuTriggerStyle.ts";
+import {navigationMenuTriggerStyle} from "@/styles/navigationMenuTriggerStyle.ts";
 import {extractUserInformation, handleLogout} from "@/lib/token";
 import {useEffect, useState} from "react";
 import type {UserInformation} from "@/types/UserInformation";
