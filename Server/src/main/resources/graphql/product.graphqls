@@ -67,6 +67,8 @@ type ProductResponse {
 extend type Query {
     getAllProducts(page: Int!, limit: Int!, sortDirection: SortDirection): ProductPage!
     getByCategory(page: Int!, limit: Int!, sortDirection: SortDirection, categoryCode: CategoryCode!): ProductPage!
+    getAllCategories: [CategoryCode]!
+    getProduct(id: String!): ProductResponse!
 }
 
 extend type Mutation {

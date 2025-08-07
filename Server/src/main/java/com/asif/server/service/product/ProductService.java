@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,24 @@ public class ProductService extends BaseService<Product> {
         this.userRepository = userRepository;
         this.productCategoryRepository = productCategoryRepository;
         this.productRepository = productRepository;
+    }
+
+    public Mono<GenericResponse<ProductDTO>> getProductById(String id) {
+        return Mono.fromCallable(() -> {
+            Product product = super.findById(id);
+            if (product == null) {
+                return GenericResponse.<ProductDTO>builder()
+                        .message("Product not found")
+                        .data(null)
+                        .build();
+            } else {
+                ProductDTO dto = toDTO(product);
+                return GenericResponse.<ProductDTO>builder()
+                        .message("Product found")
+                        .data(dto)
+                        .build();
+            }
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     public Mono<GenericResponse<ProductDTO>> createProduct(ProductDTO product, Authentication authentication) {
@@ -74,12 +93,16 @@ public class ProductService extends BaseService<Product> {
 
             if (userInformation.userId().equals(toUpdate.getOwner().getId()) && toUpdate.getFlag()) {
 
-                List<ProductCategory> categories = productCategoryRepository.findAllByCategoryIds(product.productCategoryIds());
+                List<ProductCategory> categories = new ArrayList<>(toUpdate.getProductCategory());
+
+                if (!(product.productCategoryIds() == null)) {
+                    categories = productCategoryRepository.findAllByCategoryIds(product.productCategoryIds());
+                }
 
                 toUpdate.setTitle(fallbackIfNull(product.title(), toUpdate.getTitle()));
                 toUpdate.setPrice(fallbackIfNull(product.price(), toUpdate.getPrice()));
                 toUpdate.setDescription(fallbackIfNull(product.description(), toUpdate.getDescription()));
-                toUpdate.setProductCategory(fallbackIfNull(categories, toUpdate.getProductCategory()));
+                toUpdate.setProductCategory(categories);
                 toUpdate.setRate(fallbackIfNull(product.rate(), toUpdate.getRate()));
                 toUpdate.setIsDraft(fallbackIfNull(product.isDraft(), toUpdate.getIsDraft()));
                 toUpdate.setInterval(fallbackIfNull(product.interval(), toUpdate.getInterval()));
@@ -149,7 +172,7 @@ public class ProductService extends BaseService<Product> {
                 .map(product -> {
                     List<String> categoryNames = product.getProductCategory()
                             .stream()
-                            .map(ProductCategory::getName)
+                            .map(ProductCategory::getCategoryCode)
                             .toList();
 
                     return ProductDTO.builder()
@@ -176,7 +199,7 @@ public class ProductService extends BaseService<Product> {
                 .price(product.getPrice())
                 .productCategoryIds(product.getProductCategory() != null
                         ? product.getProductCategory().stream()
-                        .map(ProductCategory::getId)
+                        .map(ProductCategory::getCategoryCode)
                         .collect(Collectors.toList())
                         : List.of())
                 .rate(product.getRate())
@@ -186,5 +209,15 @@ public class ProductService extends BaseService<Product> {
 
     private <T> T fallbackIfNull(T value, T fallback) {
         return value != null ? value : fallback;
+    }
+
+    public Mono<List<String>> getAllCategories() {
+        return Mono.fromCallable(() -> {
+            List<ProductCategory> allCategories = productCategoryRepository.findAll();
+            return allCategories
+                    .stream()
+                    .map(ProductCategory::getCategoryCode)
+                    .toList();
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 }

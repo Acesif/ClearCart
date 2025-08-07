@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
@@ -60,5 +62,15 @@ public class ProductController {
     ) {
         Sort.Direction sortDir = direction != null ? direction : Sort.Direction.ASC;
         return productService.getAllProductsByCategory(page, limit, sortDir, categoryCode);
+    }
+
+    @QueryMapping
+    public Mono<List<String>> getAllCategories() {
+        return productService.getAllCategories();
+    }
+
+    @QueryMapping
+    public Mono<GenericResponse<ProductDTO>> getProduct(@Argument String id) {
+        return productService.getProductById(id);
     }
 }
