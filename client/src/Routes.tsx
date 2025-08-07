@@ -9,6 +9,7 @@ import MyProductsPage from "@/pages/products/MyProductsPage.tsx";
 import AddProductPage from "@/pages/products/AddProductPage.tsx";
 import ProductPage from "@/pages/products/ProductPage.tsx";
 import NotFound from "@/components/commons/404.tsx";
+import ProductEditPage from "@/pages/products/ProductEditPage.tsx";
 
 const AppRoutes = () => (
     <Routes>
@@ -46,6 +47,12 @@ const AppRoutes = () => (
                 <ProductPage />
             </ProtectedRoute>
         } />
+        <Route path="/products/:productId/edit" element={
+            <ProtectedRoute>
+                <ProductEditPage />
+            </ProtectedRoute>
+        } />
+        <Route path="*" element={<NotFound />} />
     </Routes>
 );
 

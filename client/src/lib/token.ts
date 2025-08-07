@@ -32,8 +32,8 @@ export function extractUserInformation(): UserInformation | null {
             return null;
         }
     }
-
 }
+
 export function getToken(): string | null{
     const token = localStorage.getItem("accessToken");
     if (!token) {

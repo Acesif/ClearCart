@@ -7,5 +7,6 @@ export type ProductCardType = {
     price: number,
     productCategoryIds: string[],
     rate: number,
-    interval: RateInterval
+    interval: RateInterval,
+    owner: string
 }

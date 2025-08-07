@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
-import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/products/getAllProducts.ts";
 import {ADD_PRODUCT_MUTATION} from "@/graphql/mutations/products/addProduct.ts";
 import ProductList from "@/components/products/ProductList.tsx";
 import {Button} from "@/components/ui/button.tsx";
@@ -11,16 +10,16 @@ import {PackagePlusIcon} from "lucide-react";
 import Loader from "@/components/commons/Loader.tsx";
 import {toast} from "sonner";
 import {useProductStore} from "@/store/productStore.ts";
+import {GET_ALL_MY_PRODUCTS_QUERY} from "@/graphql/queries/products/getAllProductsByUser.ts";
 
 const MyProductsPage: React.FC = () => {
     const [myProducts, setMyProducts] = useState<ProductCardType[]>([]);
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
-    const { createdProductId, setCreatedProductId } = useProductStore();
-    const [productCreationStatus, setProductCreationStatus] = useState(false);
+    const { setCreatedProductId } = useProductStore();
     const { page, handlePrevious, handleNext } = usePagination({ maxPage });
     const navigate = useNavigate();
 
-    const { data, loading } = useQuery(GET_ALL_PRODUCTS_QUERY, {
+    const { data, loading } = useQuery(GET_ALL_MY_PRODUCTS_QUERY, {
         variables: {
             page,
             limit: 2,
@@ -28,29 +27,36 @@ const MyProductsPage: React.FC = () => {
         },
     });
 
-    const [addProduct, { loading: mutationLoading }] = useMutation(ADD_PRODUCT_MUTATION);
-
-    const handleProductCreation = async () => {
-        const response = await addProduct();
-        if (response?.data?.addProduct?.data) {
-            setCreatedProductId(response?.data?.addProduct?.data?.id);
-            setProductCreationStatus(true);
-            console.log(createdProductId, productCreationStatus)
-            toast.success("Product draft created successfully!");
-            navigate("/myproducts/create");
-        } else if (response?.errors) {
-            setProductCreationStatus(false);
-            console.log(response.errors[0].message);
+    const [addProduct, { loading: mutationLoading }] = useMutation(ADD_PRODUCT_MUTATION, {
+        onCompleted: (response) => {
+            if (response?.addProduct?.data) {
+                setCreatedProductId(response?.addProduct?.data?.id);
+                console.log(response?.addProduct?.data?.id, true);
+                toast.success("Product draft created successfully!");
+                navigate("/myproducts/create");
+            }
+        },
+        onError: (error) => {
+            console.error(error.message);
             toast.warning("Failed to create product");
         }
-    }
+    });
+
+    const handleProductCreation = async () => {
+        try {
+            await addProduct();
+        } catch (error) {
+            console.error("Error during product creation:", error);
+            toast.warning("Error during product creation");
+        }
+    };
 
     useEffect(() => {
-        if (data?.getAllProducts?.content) {
-            setMyProducts(data.getAllProducts.content);
-            setMaxPage(data.getAllProducts.totalPages - 1);
+        if (data?.getAllProductsByUser?.content) {
+            setMyProducts(data.getAllProductsByUser.content);
+            setMaxPage(data.getAllProductsByUser.totalPages - 1);
         }
-    }, [data,setProductCreationStatus]);
+    }, [data]);
 
     return (
         <div className="mt-15 flex flex-col items-center w-full">

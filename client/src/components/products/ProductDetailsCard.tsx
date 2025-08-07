@@ -19,7 +19,7 @@ const ProductDetailsCard = ({
             </p>
             <p className="text-gray-600 mb-4">Price: <span className="font-semibold text-gray-800">${price}</span></p>
             <p className="text-gray-600 mb-4">Rent:
-                <span className="font-semibold text-gray-800">${rate}</span> {interval.split("_").join(" ")}
+                <span className="font-semibold text-gray-800"> ${rate}</span> {interval.split("_").join(" ")}
             </p>
             <p className="text-gray-700 mb-4">
                 {description}

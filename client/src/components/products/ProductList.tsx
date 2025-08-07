@@ -1,4 +1,3 @@
-import React from 'react';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
 import ProductCard from "@/components/products/ProductCard.tsx";
 import Pagination from "@/components/commons/Pagination.tsx";
@@ -13,13 +12,13 @@ interface ProductListProps {
     handleNext: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({
-                                                     products,
-                                                     loading,
-                                                     page,
-                                                     handlePrevious,
-                                                     handleNext,
-                                                 }) => {
+function ProductList ({
+    products,
+    loading,
+    page,
+    handlePrevious,
+    handleNext,
+}: ProductListProps){
     return (
         <div className="w-full pt-10 flex flex-col items-center justify-center gap-5">
             {loading ? (
@@ -39,6 +38,7 @@ const ProductList: React.FC<ProductListProps> = ({
                                 productCategoryIds={product.productCategoryIds}
                                 rate={product.rate}
                                 interval={product.interval}
+                                owner={product.owner}
                             />
                         ))}
                     </>

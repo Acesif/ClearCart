@@ -38,6 +38,7 @@ const ProductPage = () => {
                     productCategoryIds={product.productCategoryIds}
                     rate={product.rate}
                     interval={product.interval}
+                    owner={product.owner}
                 />
             )}
         </div>
