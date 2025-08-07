@@ -2,6 +2,7 @@ import React from 'react';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
 import ProductCard from "@/components/products/ProductCard.tsx";
 import Pagination from "@/components/commons/Pagination.tsx";
+import Loader from "@/components/commons/Loader.tsx";
 
 interface ProductListProps {
     products: ProductCardType[];
@@ -23,7 +24,7 @@ const ProductList: React.FC<ProductListProps> = ({
         <div className="w-full pt-10 flex flex-col items-center justify-center gap-5">
             {loading ? (
                 <div className="mt-50 flex justify-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-gray-300" />
+                    <Loader className="w-10 h-10" />
                 </div>
             ) : (
                 products.length > 0 ? (

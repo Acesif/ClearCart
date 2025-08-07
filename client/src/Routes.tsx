@@ -6,7 +6,7 @@ import ProductsPage from "@/pages/products/ProductsPage.tsx";
 import ProtectedRoute from "@/components/auth/ProtectedRoutes.tsx";
 import UserProfile from "@/pages/auth/UserProfile.tsx";
 import MyProductsPage from "@/pages/products/MyProductsPage.tsx";
-import CreateProductForm from "@/components/products/CreateProductForm.tsx";
+import AddProductPage from "@/pages/products/AddProductPage.tsx";
 
 const AppRoutes = () => (
     <Routes>
@@ -35,7 +35,7 @@ const AppRoutes = () => (
         } />
         <Route path="/myproducts/create" element={
             <ProtectedRoute>
-                <CreateProductForm />
+                <AddProductPage />
             </ProtectedRoute>
         } />
     </Routes>

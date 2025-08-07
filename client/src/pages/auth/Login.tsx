@@ -1,7 +1,7 @@
 import {LoginForm} from "@/components/auth/LoginForm.tsx";
 import {useState} from "react";
 import {useMutation} from "@apollo/client";
-import {LOGIN_MUTATION} from "@/graphql/mutations/login.ts";
+import {LOGIN_MUTATION} from "@/graphql/mutations/auth/login.ts";
 import * as React from "react";
 import {toast} from "sonner";
 import {useNavigate} from "react-router-dom";

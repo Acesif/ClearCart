@@ -11,23 +11,35 @@ export function handleLogout() {
 
 export function extractUserInformation(): UserInformation | null {
     const token = localStorage.getItem("accessToken");
-    if (!token) return null;
+    if (!token) {
+        return null;
+    } else {
+        try {
+            const payloadBase64 = token.split(".")[1];
+            const decodedPayload = JSON.parse(atob(payloadBase64));
 
-    try {
-        const payloadBase64 = token.split(".")[1];
-        const decodedPayload = JSON.parse(atob(payloadBase64));
+            if (decodedPayload.exp * 1000 <= Date.now()) {
+                localStorage.removeItem("accessToken");
+                return null;
+            }
 
-        if (decodedPayload.exp * 1000 <= Date.now()) {
-            localStorage.removeItem("accessToken");
+            return {
+                userId: decodedPayload.sub,
+                roles: decodedPayload.roles ?? [""],
+            };
+        } catch (error) {
+            console.error("Failed to decode token:", error);
             return null;
         }
+    }
 
-        return {
-            userId: decodedPayload.sub,
-            roles: decodedPayload.roles ?? [""],
-        };
-    } catch (error) {
-        console.error("Failed to decode token:", error);
+}
+export function getToken(): string | null{
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
         return null;
+    } else {
+        return token;
     }
 }
+

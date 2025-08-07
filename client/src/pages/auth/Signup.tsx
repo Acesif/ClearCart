@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useMutation} from "@apollo/client";
 import * as React from "react";
 import {toast} from "sonner";
-import {SIGNUP_MUTATION} from "@/graphql/mutations/signup.ts";
+import {SIGNUP_MUTATION} from "@/graphql/mutations/auth/signup.ts";
 import {SignupForm} from "@/components/auth/SignupForm.tsx";
 import {useNavigate} from "react-router-dom";
 
