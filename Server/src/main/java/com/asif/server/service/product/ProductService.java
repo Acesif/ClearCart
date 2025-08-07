@@ -53,6 +53,7 @@ public class ProductService extends BaseService<Product> {
                     .owner(userRepository.getUserById(userInformation.userId()))
                     .rate(product.rate())
                     .interval(product.interval())
+                    .flag(false)
                     .build();
             Product savedProduct = super.save(toSave);
 

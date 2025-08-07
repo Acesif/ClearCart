@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Product extends BaseEntity {
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String title;
 
     @Column(columnDefinition = "TEXT")
