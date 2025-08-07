@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 public class ProductCategory extends BaseEntity {
 
     @Column(nullable = false)
-    private String categoryId;
+    private String categoryCode;
 
     @Column(nullable = false)
     private String name;

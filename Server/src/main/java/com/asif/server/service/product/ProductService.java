@@ -76,14 +76,13 @@ public class ProductService extends BaseService<Product> {
 
                 List<ProductCategory> categories = productCategoryRepository.findAllByCategoryIds(product.productCategoryIds());
 
-                toUpdate.setTitle(product.title());
-                toUpdate.setPrice(product.price());
-                toUpdate.setDescription(product.description());
-                toUpdate.setProductCategory(categories);
-                toUpdate.setOwner(toUpdate.getOwner());
-                toUpdate.setRate(product.rate());
-                toUpdate.setInterval(product.interval());
-                toUpdate.setIsDraft(product.isDraft());
+                toUpdate.setTitle(fallbackIfNull(product.title(), toUpdate.getTitle()));
+                toUpdate.setPrice(fallbackIfNull(product.price(), toUpdate.getPrice()));
+                toUpdate.setDescription(fallbackIfNull(product.description(), toUpdate.getDescription()));
+                toUpdate.setProductCategory(fallbackIfNull(categories, toUpdate.getProductCategory()));
+                toUpdate.setRate(fallbackIfNull(product.rate(), toUpdate.getRate()));
+                toUpdate.setIsDraft(fallbackIfNull(product.isDraft(), toUpdate.getIsDraft()));
+                toUpdate.setInterval(fallbackIfNull(product.interval(), toUpdate.getInterval()));
 
                 Product updated = super.update(toUpdate);
                 ProductDTO response = toDTO(updated);
@@ -139,7 +138,7 @@ public class ProductService extends BaseService<Product> {
         return Mono.fromCallable(() -> {
             Page<Product> productPage = productRepository.findAllByProductCategory(
                     category,
-                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+                    PageRequest.of(page, limit, Sort.by(direction, "create_date"))
             );
             return getProductDTOS(productPage);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -185,4 +184,7 @@ public class ProductService extends BaseService<Product> {
                 .build();
     }
 
+    private <T> T fallbackIfNull(T value, T fallback) {
+        return value != null ? value : fallback;
+    }
 }

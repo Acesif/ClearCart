@@ -58,27 +58,27 @@ public class DBSeeder {
         if (productCategoryRepository.findAll().isEmpty()) {
             List<ProductCategory> categories = List.of(
                     ProductCategory.builder()
-                            .categoryId("ELC")
+                            .categoryCode("ELC")
                             .name("Electronics")
                             .build(),
                     ProductCategory.builder()
-                            .categoryId("FNT")
+                            .categoryCode("FNT")
                             .name("Furniture")
                             .build(),
                     ProductCategory.builder()
-                            .categoryId("HAP")
+                            .categoryCode("HAP")
                             .name("Home Appliances")
                             .build(),
                     ProductCategory.builder()
-                            .categoryId("SPG")
+                            .categoryCode("SPG")
                             .name("Sporting Goods")
                             .build(),
                     ProductCategory.builder()
-                            .categoryId("OTD")
+                            .categoryCode("OTD")
                             .name("Outdoor")
                             .build(),
                     ProductCategory.builder()
-                            .categoryId("TOY")
+                            .categoryCode("TOY")
                             .name("Toys")
                             .build()
             );

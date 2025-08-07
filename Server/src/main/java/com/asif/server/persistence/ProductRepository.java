@@ -10,23 +10,17 @@ import org.springframework.data.repository.query.Param;
 public interface ProductRepository extends BaseRepository<Product> {
     @Query(
             value = """
-        SELECT p.*
-        FROM products p
-        JOIN product_category pc ON p.id = pc.product_id
-        JOIN product_categories c ON c.category_id = pc.category_id
-        WHERE c.category_id = :productCategory
-    """,
-            countQuery = """
-        SELECT COUNT(*)
-        FROM products p
-        JOIN product_category pc ON p.id = pc.product_id
-        JOIN product_categories c ON c.category_id = pc.category_id
-        WHERE c.category_id = :productCategory
-    """,
+                SELECT p.*
+                FROM products p
+                JOIN product_category pc ON p.id = pc.product_id
+                JOIN category c ON c.id = pc.category_id
+                WHERE c.category_code = :productCategory
+            """,
             nativeQuery = true
     )
     Page<Product> findAllByProductCategory(
             @Param("productCategory") String productCategory,
             Pageable pageable
     );
+
 }

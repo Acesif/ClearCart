@@ -10,6 +10,6 @@ import java.util.List;
 public interface ProductCategoryRepository extends BaseRepository<ProductCategory> {
 
 
-    @Query("SELECT pc FROM ProductCategory pc WHERE pc.categoryId IN :categoryIds")
+    @Query("SELECT pc FROM ProductCategory pc WHERE pc.categoryCode IN :categoryIds")
     List<ProductCategory> findAllByCategoryIds(@Param("categoryIds") List<String> categoryIds);
 }
