@@ -86,7 +86,13 @@ const ProductDetailsCard = ({
         console.log("Renting product with ID:", id, "From:", fromRentDate, "To:", toRentDate);
 
         try {
-            await rentProduct({ variables: { id, fromRentDate, toRentDate } });
+            await rentProduct({
+                variables: {
+                    id,
+                    fromRentDate,
+                    toRentDate
+                }
+            });
         } catch (err) {
             console.error("Error executing mutation:", err);
         }
@@ -119,7 +125,7 @@ const ProductDetailsCard = ({
             )}
 
             {rentModalOpen && (
-                <RentingConfirmationModal closeModal={toggleRentModal} handleRent={handleRent} />
+                <RentingConfirmationModal closeModal={toggleRentModal} handleRent={handleRent} productId={id}/>
             )}
         </div>
     );

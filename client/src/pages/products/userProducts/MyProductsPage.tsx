@@ -4,7 +4,7 @@ import type {ProductCardType} from "@/types/ProductCardType.ts";
 import {ADD_PRODUCT_MUTATION} from "@/graphql/mutations/products/addProduct.ts";
 import ProductList from "@/components/products/ProductList.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import usePagination from "@/lib/paginationOptions.ts";
 import {PackagePlusIcon} from "lucide-react";
 import Loader from "@/components/commons/Loader.tsx";
@@ -17,7 +17,11 @@ const MyProductsPage: React.FC = () => {
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
     const { setCreatedProductId } = useProductStore();
     const { page, handlePrevious, handleNext } = usePagination({ maxPage });
+
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+
 
     const { data, loading } = useQuery(GET_ALL_MY_PRODUCTS_QUERY, {
         variables: {
@@ -25,6 +29,7 @@ const MyProductsPage: React.FC = () => {
             limit: 2,
             sortDirection: 'ASC'
         },
+        fetchPolicy: queryParams.get('refresh') ? "network-only" : "cache-first"
     });
 
     const [addProduct, { loading: mutationLoading }] = useMutation(ADD_PRODUCT_MUTATION, {
@@ -56,7 +61,9 @@ const MyProductsPage: React.FC = () => {
             setMyProducts(data.getAllProductsByUser.content);
             setMaxPage(data.getAllProductsByUser.totalPages - 1);
         }
-    }, [data]);
+        const urlWithoutParams = `${location.pathname}`;
+        navigate(urlWithoutParams, { replace: true });
+    }, [data, location.pathname, navigate]);
 
     return (
         <div className="mt-15 flex flex-col items-center w-full">

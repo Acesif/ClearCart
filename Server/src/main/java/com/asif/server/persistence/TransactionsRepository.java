@@ -2,6 +2,8 @@ package com.asif.server.persistence;
 
 import com.asif.server.base.BaseRepository;
 import com.asif.server.entity.Transactions.ProductTransactions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,14 +16,16 @@ public interface TransactionsRepository extends BaseRepository<ProductTransactio
     ProductTransactions findByProductId(String productId);
 
     @Query("SELECT t FROM ProductTransactions t WHERE t.toOwner.id = :toOwner AND t.transactionType = 'TRADE'")
-    List<ProductTransactions> findByBoughtItems(@Param("toOwner") String toOwner);
+    Page<ProductTransactions> findByBoughtItems(@Param("toOwner") String toOwner, Pageable pageable);
 
     @Query("SELECT t FROM ProductTransactions t WHERE t.fromOwner.id = :fromOwner AND t.transactionType = 'TRADE'")
-    List<ProductTransactions> findBySoldItems(@Param("fromOwner") String fromOwner);
+    Page<ProductTransactions> findBySoldItems(@Param("fromOwner") String fromOwner, Pageable pageable);
 
     @Query("SELECT t FROM ProductTransactions t WHERE t.toOwner.id = :toOwner AND t.transactionType = 'LOAN'")
-    List<ProductTransactions> findByBorrowedItems(@Param("toOwner") String toOwner);
+    Page<ProductTransactions> findByBorrowedItems(@Param("toOwner") String toOwner, Pageable pageable);
 
     @Query("SELECT t FROM ProductTransactions t WHERE t.fromOwner.id = :fromOwner AND t.transactionType = 'LOAN'")
-    List<ProductTransactions> findByLentItems(@Param("fromOwner") String fromOwner);
+    Page<ProductTransactions> findByLentItems(@Param("fromOwner") String fromOwner, Pageable pageable);
+
+    List<ProductTransactions> findAllByProductId(String productId);
 }

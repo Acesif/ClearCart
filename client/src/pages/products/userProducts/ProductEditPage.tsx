@@ -57,14 +57,14 @@ const ProductEditPage = () => {
                 id: productId,
                 title: formData.title,
                 description: formData.description,
-                selectedCategories: formData.selectedCategories,
+                productCategoryIds: formData.selectedCategories,
                 price: formData.price,
-                rentAmount: formData.rentAmount,
-                rentOption: formData.rentOption,
+                rate: formData.rentAmount,
+                interval: formData.rentOption,
             },
         });
         console.log('Form Submitted:', formData);
-        navigate("/myproducts");
+        navigate("/myproducts?refresh=true");
     };
     const handleNext = () => {};
     const handleBack = () => {};

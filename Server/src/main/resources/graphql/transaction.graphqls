@@ -23,11 +23,20 @@ type GenericResponseTransactions {
     data: [Transaction]
 }
 
+type TransactionPage {
+    content: [Transaction!]!
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    size: Int!
+}
+
 extend type Query {
-    seeBought: GenericResponseTransactions!
-    seeSold: GenericResponseTransactions!
-    seeLent: GenericResponseTransactions!
-    seeBorrowed: GenericResponseTransactions!
+    seeBought(page: Int!, limit: Int!, sortDirection: SortDirection!): TransactionPage!
+    seeSold(page: Int!, limit: Int!, sortDirection: SortDirection!): TransactionPage!
+    seeLent(page: Int!, limit: Int!, sortDirection: SortDirection!): TransactionPage!
+    seeBorrowed(page: Int!, limit: Int!, sortDirection: SortDirection!): TransactionPage!
+    getTransactionsByProductId(productId: String!): GenericResponseTransactions!
 }
 
 extend type Mutation {

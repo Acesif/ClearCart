@@ -14,12 +14,17 @@ import com.asif.server.persistence.TransactionsRepository;
 import com.asif.server.service.product.ProductService;
 import com.asif.server.service.users.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.asif.server.utils.ExtractAuth.extractUserInformation;
@@ -70,7 +75,7 @@ public class TransactionService extends BaseService<ProductTransactions> {
             }
 
             ProductTransactions existingTransactions = transactionsRepository.findByProductId(product.id());
-            OffsetDateTime today = OffsetDateTime.now();
+            LocalDateTime today = LocalDateTime.now();
             if (existingTransactions != null && today.equals(existingTransactions.getToRentDate()) && today.isBefore(existingTransactions.getToRentDate())) {
                 return GenericResponse.<TransactionDTO>builder()
                         .message("Another user has scheduled to rent this product")
@@ -111,8 +116,8 @@ public class TransactionService extends BaseService<ProductTransactions> {
     @Transactional
     public Mono<GenericResponse<TransactionDTO>> rentProduct(
             ProductDTO product,
-            OffsetDateTime fromRentDate,
-            OffsetDateTime toRentDate,
+            LocalDate fromRentDate,
+            LocalDate toRentDate,
             Authentication authentication
     ) {
         return Mono.fromCallable(() -> {
@@ -126,72 +131,87 @@ public class TransactionService extends BaseService<ProductTransactions> {
                         .build();
             }
 
+            LocalDateTime fromRentDateTime = fromRentDate.atStartOfDay();
+            LocalDateTime toRentDateTime = toRentDate.atStartOfDay();
+
             Product productEntity;
-            ProductTransactions existingTransaction = transactionsRepository.findByProductId(product.id());
-            if (existingTransaction != null && existingTransaction.getFlag()) {
-                productEntity = existingTransaction.getProduct();
-                if (validRentPeriod(existingTransaction.getFromRentDate(), existingTransaction.getToRentDate(), fromRentDate, toRentDate)) {
-                    return rentProductHelperMethod(fromRentDate, toRentDate, userInformation, productEntity);
+            List<ProductTransactions> existingTransactions = transactionsRepository.findAllByProductId(product.id());
+
+            if (!existingTransactions.isEmpty()) {
+                productEntity = existingTransactions.get(0).getProduct();
+                for (ProductTransactions transaction : existingTransactions) {
+                    if (transaction.getFlag() && transaction.getFromRentDate() != null && !validRentPeriod(transaction.getFromRentDate(), transaction.getToRentDate(), fromRentDateTime, toRentDateTime)) {
+                        return GenericResponse.<TransactionDTO>builder()
+                                .message("This product is already rented during the selected period.")
+                                .data(null)
+                                .build();
+                    }
                 }
-                return GenericResponse.<TransactionDTO>builder()
-                        .message("Invalid date range selection for renting product")
-                        .data(null)
-                        .build();
             } else {
                 productEntity = productService.findById(product.id());
-                return rentProductHelperMethod(fromRentDate, toRentDate, userInformation, productEntity);
             }
+            return rentProductHelperMethod(fromRentDateTime, toRentDateTime, userInformation, productEntity);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
 
-    public Mono<GenericResponse<List<TransactionDTO>>> seeMyBoughtItems(Authentication authentication) {
+    public Mono<Page<TransactionDTO>> seeMyBoughtItems(int page, int limit, Sort.Direction direction, Authentication authentication) {
         UserInformation userInformation = extractUserInformation(authentication);
         return Mono.fromCallable(() -> {
-            List<ProductTransactions> transactions = transactionsRepository.findByBoughtItems(userInformation.userId());
-            return GenericResponse.<List<TransactionDTO>>builder()
-                    .message("Successfully retrieved your bought items")
-                    .data(toDTOList(transactions))
-                    .build();
+            Page<ProductTransactions> transactions = transactionsRepository.findByBoughtItems(
+                    userInformation.userId(),
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+            );
+            return getTransactionDTOS(transactions);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<GenericResponse<List<TransactionDTO>>> seeMySoldItems(Authentication authentication) {
+    public Mono<Page<TransactionDTO>> seeMySoldItems(int page, int limit, Sort.Direction direction, Authentication authentication) {
         UserInformation userInformation = extractUserInformation(authentication);
         return Mono.fromCallable(() -> {
-            List<ProductTransactions> transactions = transactionsRepository.findBySoldItems(userInformation.userId());
-            return GenericResponse.<List<TransactionDTO>>builder()
-                    .message("Successfully retrieved your sold items")
-                    .data(toDTOList(transactions))
-                    .build();
+            Page<ProductTransactions> transactions = transactionsRepository.findBySoldItems(
+                    userInformation.userId(),
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+            );
+            return getTransactionDTOS(transactions);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<GenericResponse<List<TransactionDTO>>> seeMyLentItems(Authentication authentication) {
+    public Mono<Page<TransactionDTO>> seeMyLentItems(int page, int limit, Sort.Direction direction, Authentication authentication) {
         UserInformation userInformation = extractUserInformation(authentication);
         return Mono.fromCallable(() -> {
-            List<ProductTransactions> transactions = transactionsRepository.findByLentItems(userInformation.userId());
-            return GenericResponse.<List<TransactionDTO>>builder()
-                    .message("Successfully retrieved your lent items")
-                    .data(toDTOList(transactions))
-                    .build();
+            Page<ProductTransactions> transactions = transactionsRepository.findByLentItems(
+                    userInformation.userId(),
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+            );
+            return getTransactionDTOS(transactions);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<GenericResponse<List<TransactionDTO>>> seeMyBorrowedItems(Authentication authentication) {
+    public Mono<Page<TransactionDTO>> seeMyBorrowedItems(int page, int limit, Sort.Direction direction, Authentication authentication) {
         UserInformation userInformation = extractUserInformation(authentication);
         return Mono.fromCallable(() -> {
-            List<ProductTransactions> transactions = transactionsRepository.findByBorrowedItems(userInformation.userId());
+            Page<ProductTransactions> transactions = transactionsRepository.findByBorrowedItems(
+                    userInformation.userId(),
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate"))
+            );
+            return getTransactionDTOS(transactions);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Mono<GenericResponse<List<TransactionDTO>>> getTransactionsByProductId(String productId) {
+        return Mono.fromCallable(() -> {
+            List<ProductTransactions> transactions = transactionsRepository.findAllByProductId(productId);
             return GenericResponse.<List<TransactionDTO>>builder()
-                    .message("Successfully retrieved your borrowed items")
+                    .message("Successfully retrieved transactions for product " + productId)
                     .data(toDTOList(transactions))
                     .build();
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     private GenericResponse<TransactionDTO> rentProductHelperMethod(
-            OffsetDateTime fromRentDate,
-            OffsetDateTime toRentDate,
+            LocalDateTime fromRentDate,
+            LocalDateTime toRentDate,
             UserInformation userInformation,
             Product productEntity) {
         User renter = userService.findById(userInformation.userId());
@@ -205,12 +225,6 @@ public class TransactionService extends BaseService<ProductTransactions> {
                 .toRentDate(toRentDate)
                 .build();
 
-        if (newTransaction == null) {
-            return GenericResponse.<TransactionDTO>builder()
-                    .data(null)
-                    .message("Failed to rent product")
-                    .build();
-        }
         super.save(newTransaction);
 
         return GenericResponse.<TransactionDTO>builder()
@@ -219,13 +233,15 @@ public class TransactionService extends BaseService<ProductTransactions> {
                 .build();
     }
 
-    private boolean validRentPeriod(OffsetDateTime fromRentDateTrans, OffsetDateTime toRentDateTrans, OffsetDateTime fromRentDate, OffsetDateTime toRentDate) {
-        return fromRentDate.isAfter(toRentDateTrans) ||
-                toRentDate.isBefore(fromRentDateTrans) ||
-                (fromRentDate.isEqual(toRentDateTrans) && toRentDate.isEqual(fromRentDateTrans)) ||
-                (fromRentDate.isEqual(toRentDateTrans) && toRentDate.isAfter(toRentDateTrans)) ||
-                (toRentDate.isEqual(fromRentDateTrans) && fromRentDate.isBefore(fromRentDateTrans)) ||
-                (toRentDate.isEqual(fromRentDateTrans) && fromRentDate.isEqual(fromRentDateTrans));
+    private boolean validRentPeriod(LocalDateTime fromRentDateTrans, LocalDateTime toRentDateTrans, LocalDateTime fromRentDate, LocalDateTime toRentDate) {
+        return fromRentDate.isAfter(toRentDateTrans) || toRentDate.isBefore(fromRentDateTrans);
+    }
+
+    private Page<TransactionDTO> getTransactionDTOS(Page<ProductTransactions> productTransactions) {
+        List<TransactionDTO> transactions = productTransactions.getContent().stream()
+                .map(this::toDTO)
+                .toList();
+        return new PageImpl<>(transactions, productTransactions.getPageable(), productTransactions.getTotalElements());
     }
 
     private TransactionDTO toDTO(ProductTransactions productTransaction) {

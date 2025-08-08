@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -39,11 +40,11 @@ public class ProductTransactions extends BaseEntity {
     private TransactionType transactionType;
 
     @Column(name = "from_rent_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "Asia/Dhaka")
-    private OffsetDateTime fromRentDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Dhaka")
+    private LocalDateTime fromRentDate;
 
     @Column(name = "to_rent_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "Asia/Dhaka")
-    private OffsetDateTime toRentDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Dhaka")
+    private LocalDateTime toRentDate;
 }
 

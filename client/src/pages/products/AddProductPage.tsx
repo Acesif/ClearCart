@@ -50,7 +50,7 @@ const AddProductPage = () => {
             },
         });
         console.log('Form Submitted:', formData);
-        navigate("/myproducts");
+        navigate("/myproducts?refresh=true");
     };
 
     useEffect(() => {

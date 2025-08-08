@@ -4,6 +4,7 @@ import com.asif.server.dto.product.TransactionType;
 import com.asif.server.entity.product.Product;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Builder
@@ -13,8 +14,8 @@ public record TransactionDTO(
         String fromOwnerId,
         String toOwnerId,
         TransactionType transactionType,
-        OffsetDateTime fromRentDate,
-        OffsetDateTime toRentDate
+        LocalDateTime fromRentDate,
+        LocalDateTime toRentDate
 ) {
 }
 

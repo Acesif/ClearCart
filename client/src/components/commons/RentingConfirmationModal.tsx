@@ -1,56 +1,61 @@
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@apollo/client";
+import GET_TRANSACTIONS_BY_PRODUCT_ID_QUERY from "../../graphql/queries/transactions/getTransactionsByProductId.ts";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import { type DateRange } from "react-day-picker";
+import type {RentDateRange} from "@/types/RentDateRange.ts";
 
 type RentingConfirmationModalProps = {
     closeModal: (e: { preventDefault: () => void }) => void,
     handleRent: (e: { preventDefault: () => void }, fromRentDate: string, toRentDate: string) => void,
+    productId: string;
 }
 
 const RentingConfirmationModal = ({
                                       handleRent,
-                                      closeModal
+                                      closeModal,
+                                      productId
                                   }: RentingConfirmationModalProps) => {
-    const [fromRentDate, setFromRentDate] = useState("");
-    const [toRentDate, setToRentDate] = useState("");
+    const [range, setRange] = useState<DateRange | undefined>();
 
-    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-        if (type === "from") {
-            setFromRentDate(event.target.value);
-            if (toRentDate && event.target.value > toRentDate) {
-                setToRentDate("");
-            }
-        } else {
-            setToRentDate(event.target.value);
+    const { data, loading, error } = useQuery(GET_TRANSACTIONS_BY_PRODUCT_ID_QUERY, {
+        variables: { productId },
+        skip: !productId,
+        fetchPolicy: "network-only"
+    });
+
+    const disabledRanges = useMemo(() => {
+        const ranges = [];
+        if (data?.getTransactionsByProductId?.data) {
+            const transactionRanges = data.getTransactionsByProductId.data.map((transaction: RentDateRange) => ({
+                from: new Date(transaction.fromRentDate),
+                to: new Date(transaction.toRentDate),
+            }));
+            ranges.push(...transactionRanges);
         }
-    };
+        ranges.push({ before: new Date() });
+        return ranges;
+    }, [data]);
+
+    const isSelectionInvalid = !range?.from || !range?.to;
+
+    const fromRentDate = range?.from ? range.from.toISOString().split("T")[0] : "";
+    const toRentDate = range?.to ? range.to.toISOString().split("T")[0] : "";
 
     return (
         <div className="fixed inset-0 flex justify-center items-center">
             <div className="absolute inset-0 bg-blue-200 opacity-70"></div>
-            <div className="bg-white p-6 rounded-lg shadow-lg w-80 relative z-10">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-auto relative z-10">
                 <h3 className="text-lg font-semibold mb-4">Rental period</h3>
-                <div className="flex flex-col space-y-4">
-                    <div>
-                        <label htmlFor="fromRentDate" className="block text-sm text-gray-700">From</label>
-                        <input
-                            type="date"
-                            id="fromRentDate"
-                            value={fromRentDate}
-                            onChange={(e) => handleDateChange(e, "from")}
-                            className="w-full p-2 border rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="toRentDate" className="block text-sm text-gray-700">To</label>
-                        <input
-                            type="date"
-                            id="toRentDate"
-                            value={toRentDate}
-                            onChange={(e) => handleDateChange(e, "to")}
-                            className="w-full p-2 border rounded-md"
-                            min={fromRentDate}
-                        />
-                    </div>
-                </div>
+                {loading && <p>Loading unavailable dates...</p>}
+                {error && <p>Error loading dates. Please try again.</p>}
+                <DayPicker
+                    mode="range"
+                    selected={range}
+                    onSelect={setRange}
+                    disabled={disabledRanges}
+                />
                 <div className="flex justify-between gap-4 mt-4">
                     <button
                         className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-md"
@@ -61,7 +66,7 @@ const RentingConfirmationModal = ({
                     <button
                         className="bg-indigo-400 hover:bg-indigo-500 text-white px-4 py-2 rounded-md"
                         onClick={(e) => handleRent(e, fromRentDate, toRentDate)}
-                        disabled={!fromRentDate || !toRentDate || toRentDate < fromRentDate}
+                        disabled={isSelectionInvalid}
                     >
                         Confirm Rent
                     </button>
