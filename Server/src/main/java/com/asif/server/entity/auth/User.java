@@ -3,6 +3,7 @@ package com.asif.server.entity.auth;
 import com.asif.server.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -29,6 +30,7 @@ public class User extends BaseEntity {
     private String address;
 
     @Column(nullable = false)
+    @Pattern(regexp = "^\\+8801[3-9]\\d{8}$|^01[3-9]\\d{8}$", message = "Invalid phone number")
     private String phoneNumber;
 
     @Column(nullable = false)

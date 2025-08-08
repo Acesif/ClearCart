@@ -13,9 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -48,28 +46,24 @@ public class TransactionController {
     }
 
 
-    // see bought
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<List<TransactionDTO>>> seeBought(Authentication authentication) {
         return transactionService.seeMyBoughtItems(authentication);
     }
 
-    // see sold
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<List<TransactionDTO>>> seeSold(Authentication authentication) {
         return transactionService.seeMySoldItems(authentication);
     }
 
-    // see lent
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<List<TransactionDTO>>> seeLent(Authentication authentication) {
         return transactionService.seeMyLentItems(authentication);
     }
 
-    // see borrowed
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<List<TransactionDTO>>> seeBorrowed(Authentication authentication) {

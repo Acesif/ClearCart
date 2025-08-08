@@ -8,13 +8,16 @@ import com.asif.server.entity.auth.Role;
 import com.asif.server.entity.auth.User;
 import com.asif.server.persistence.UserRepository;
 import com.asif.server.service.jwt.JwtService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.asif.server.utils.ExtractAuth.extractUserInformation;
