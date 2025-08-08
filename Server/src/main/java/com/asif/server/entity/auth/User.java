@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     private String address;
 
     @Column(nullable = false)
-    @Pattern(regexp = "^\\+8801[3-9]\\d{8}$|^01[3-9]\\d{8}$", message = "Invalid phone number")
+    @Pattern(regexp = "^(\\+8801[3-9]\\d{8}|01[3-9]\\d{8})$", message = "Invalid phone number")
     private String phoneNumber;
 
     @Column(nullable = false)
