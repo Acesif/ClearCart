@@ -7,6 +7,8 @@ import { useMutation } from "@apollo/client";
 import DELETE_PRODUCT_QUERY from "@/graphql/mutations/products/deleteProduct.ts";
 import { toast } from "sonner";
 import { GET_ALL_MY_PRODUCTS_QUERY } from "@/graphql/queries/products/getAllProductsByUser.ts";
+import {useState} from "react";
+import DeletionConfirmationModal from "@/components/commons/DeletionConfirmationModal.tsx";
 
 const ProductCard = ({
     id,
@@ -20,6 +22,13 @@ const ProductCard = ({
 }: ProductCardType) => {
     const userInformation = extractUserInformation();
     const userId: string = userInformation?.userId as string;
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const toggleModal = (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        setModalOpen(!modalOpen);
+    }
 
     const navigate = useNavigate();
     const [deleteProduct] = useMutation(DELETE_PRODUCT_QUERY, {
@@ -67,7 +76,7 @@ const ProductCard = ({
                         <div className="flex flex-wrap gap-5 mr-5 mt-2">
                             <div
                                 className="text-red-300 hover:text-red-500"
-                                onClick={handleDelete}
+                                onClick={toggleModal}
                             >
                                 <Trash />
                             </div>
@@ -98,6 +107,9 @@ const ProductCard = ({
                     <span>1028376412 views</span>
                 </div>
             </Link>
+            {modalOpen && (
+                <DeletionConfirmationModal closeModal={toggleModal} handleDelete={handleDelete} />
+            )}
         </div>
     );
 };
