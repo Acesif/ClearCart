@@ -13,8 +13,8 @@ const AddProductPage = () => {
     const [step, setStep] = useState(1);
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [price, setPrice] = useState(0);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [rentAmount, setRentAmount] = useState(0);
     const [rentOption, setRentOption] = useState<RateInterval>(RateIntervals.PER_DAY);
     const { createdProductId } = useProductStore();
