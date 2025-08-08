@@ -24,6 +24,9 @@ public interface ProductRepository extends BaseRepository<Product> {
             Pageable pageable
     );
 
+    @Query("SELECT p FROM Product p WHERE p.flag = true AND p.owner.id != :owner")
+    Page<Product> findAllProducts(Pageable pageable, String owner);
+
     @Query("SELECT p FROM Product p where p.owner.id = :ownerId and p.flag = true")
     Page<Product> findAllByOwner(Pageable pageable, String ownerId);
 }

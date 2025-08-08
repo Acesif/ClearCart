@@ -118,8 +118,11 @@ public class UserService extends BaseService<User> {
         return UserDTO.builder()
                 .id(user.getId())
                 .fullName(user.getFirstName() + " " + user.getLastName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
-                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
                 .build();
     }
 
@@ -139,6 +142,29 @@ public class UserService extends BaseService<User> {
             return GenericResponse.<UserDTO>builder()
                     .message("User found")
                     .data(userDTO)
+                    .build();
+
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public Mono<GenericResponse<UserDTO>> updateUser(@Valid UserDTO userDTO, Authentication authentication) {
+        return Mono.fromCallable(() -> {
+
+            UserInformation userInformation = extractUserInformation(authentication);
+
+            User user = findById(userInformation.userId());
+
+            user.setFirstName(userDTO.firstName());
+            user.setLastName(userDTO.lastName());
+            user.setEmail(userDTO.email());
+            user.setPhoneNumber(userDTO.phoneNumber());
+            user.setAddress(userDTO.address());
+            user.setPassword(encoder.encode(userDTO.password()));
+            super.update(user);
+
+            return GenericResponse.<UserDTO>builder()
+                    .message("User updated successfully")
+                    .data(toDto(user))
                     .build();
 
         }).subscribeOn(Schedulers.boundedElastic());

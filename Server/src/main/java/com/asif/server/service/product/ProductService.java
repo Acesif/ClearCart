@@ -150,9 +150,13 @@ public class ProductService extends BaseService<Product> {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    public Mono<Page<ProductDTO>> getAllProducts(int page, int limit, Sort.Direction direction) {
+    public Mono<Page<ProductDTO>> getAllProducts(int page, int limit, Sort.Direction direction, Authentication authentication) {
         return Mono.fromCallable(() -> {
-                Page<Product> productPage = super.findAll(page, limit, direction);
+                UserInformation userInformation = extractUserInformation(authentication);
+                Page<Product> productPage = productRepository.findAllProducts(
+                        PageRequest.of(page, limit, Sort.by(direction, "createDate")),
+                        userInformation.userId()
+                );
             return getProductDTOS(productPage);
         }).subscribeOn(Schedulers.boundedElastic());
     }

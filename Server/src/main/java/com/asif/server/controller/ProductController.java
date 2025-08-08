@@ -48,10 +48,11 @@ public class ProductController {
     public Mono<Page<ProductDTO>> getAllProducts(
             @Argument int page,
             @Argument int limit,
-            @Argument(name = "sortDirection") Sort.Direction direction
+            @Argument(name = "sortDirection") Sort.Direction direction,
+            Authentication authentication
     ) {
         Sort.Direction sortDir = direction != null ? direction : Sort.Direction.ASC;
-        return productService.getAllProducts(page, limit, sortDir);
+        return productService.getAllProducts(page, limit, sortDir, authentication);
     }
 
     @QueryMapping

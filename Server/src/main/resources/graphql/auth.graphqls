@@ -20,6 +20,9 @@ type UserDTO {
     id: ID
     fullName: String
     email: String
+    phoneNumber: String
+    address: String
+    password: String
 }
 
 type AuthPayload {
@@ -51,6 +54,7 @@ extend type Query {
 extend type Mutation {
     login(loginInput: LoginInput): LoginResponse!
     signUp(signupInput: SignUpInput): SignupResponse!
+    updateUser(userDTO: SignUpInput): SignupResponse!
 }
 
 

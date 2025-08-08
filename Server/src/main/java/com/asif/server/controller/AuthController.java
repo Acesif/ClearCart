@@ -45,4 +45,13 @@ public class AuthController {
     public Mono<GenericResponse<UserDTO>> user(Authentication authentication) {
         return userService.getMyInfo(authentication);
     }
+
+    @MutationMapping
+    @PreAuthorize("isAuthenticated()")
+    public Mono<GenericResponse<UserDTO>> updateUser(
+            @Argument @Valid UserDTO userDTO,
+            Authentication authentication
+    ) {
+        return userService.updateUser(userDTO, authentication);
+    }
 }
