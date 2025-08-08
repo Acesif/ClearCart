@@ -41,7 +41,7 @@ function CreateProductStep2({
                 className="w-full"
                 classNamePrefix="react-select"
             />
-            <p className="text-sm text-gray-500 mt-2">NOTE: Hold CTRL to select multiple items</p>
+            <p className="text-sm text-gray-500 mt-2">Select multiple categories to which your product belongs to</p>
             <div className="flex justify-between mt-4">
                 <button
                     onClick={onBack}

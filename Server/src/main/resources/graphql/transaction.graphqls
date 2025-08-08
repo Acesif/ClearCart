@@ -18,6 +18,18 @@ type GenericResponseTransaction {
     data: Transaction
 }
 
+type GenericResponseTransactions {
+    message: String
+    data: [Transaction]
+}
+
+extend type Query {
+    seeBought: GenericResponseTransactions!
+    seeSold: GenericResponseTransactions!
+    seeLent: GenericResponseTransactions!
+    seeBorrowed: GenericResponseTransactions!
+}
+
 extend type Mutation {
     buyProduct(product: ProductInput!): GenericResponseTransaction!
     rentProduct(product: ProductInput!, fromRentDate: String!, toRentDate: String!): GenericResponseTransaction!

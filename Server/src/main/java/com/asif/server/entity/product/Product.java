@@ -49,6 +49,5 @@ public class Product extends BaseEntity {
     @Builder.Default
     private Boolean isDraft = true;
 
-    @Column(nullable = false)
     private Long views = 0L;
 }

@@ -1,19 +1,20 @@
 package com.asif.server.dto.transaction;
 
 import com.asif.server.dto.product.TransactionType;
+import com.asif.server.entity.product.Product;
 import lombok.Builder;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Builder
 public record TransactionDTO(
         String id,
-        String productId,
+        Product product,
         String fromOwnerId,
         String toOwnerId,
         TransactionType transactionType,
-        Date fromRentDate,
-        Date toRentDate
+        OffsetDateTime fromRentDate,
+        OffsetDateTime toRentDate
 ) {
 }
 
