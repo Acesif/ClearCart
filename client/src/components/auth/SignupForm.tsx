@@ -10,7 +10,9 @@ import {
 import { Input } from "@/components/ui/input.tsx"
 import { Label } from "@/components/ui/label.tsx"
 import * as React from "react";
-import {Eye, EyeOff} from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import {toast} from "sonner";
+import {useState} from "react";
 
 type SignupFormProps = React.ComponentProps<"div"> & {
   setFormState: React.Dispatch<React.SetStateAction<{
@@ -32,9 +34,25 @@ export function SignupForm({
                              className,
                              ...props
                            }: SignupFormProps) {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState("");
+
+  const validatePasswords = () => {
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validatePasswords()) {
+      handleSubmit(e);
+    }
+  };
 
   return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -46,10 +64,8 @@ export function SignupForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col gap-6">
-
-                {/* First Name & Last Name */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName" className="mb-2">First Name</Label>
@@ -75,7 +91,6 @@ export function SignupForm({
                   </div>
                 </div>
 
-                {/* Address */}
                 <div className="grid gap-3">
                   <Label htmlFor="address">Address</Label>
                   <Input
@@ -88,7 +103,6 @@ export function SignupForm({
                   />
                 </div>
 
-                {/* Email & Phone Number */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="email" className="mb-2">Email</Label>
@@ -108,24 +122,26 @@ export function SignupForm({
                         id="phoneNumber"
                         type="tel"
                         placeholder="Phone Number"
+                        pattern="^(\+8801[3-9]\d{8}|01[3-9]\d{8})$"
                         onChange={(e) =>
                             setFormState((prev) => ({ ...prev, phoneNumber: e.target.value }))
                         }
                         required
+                        title="Phone number must be a valid Bangladeshi number starting with +880 or 880 followed by 9 digits."
                     />
                   </div>
                 </div>
 
-                {/* Password */}
                 <div className="grid gap-3 relative">
                   <Label htmlFor="password">Password</Label>
                   <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
-                      onChange={(e) =>
-                          setFormState((prev) => ({ ...prev, password: e.target.value }))
-                      }
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setFormState((prev) => ({ ...prev, password: e.target.value }));
+                      }}
                       required
                   />
                   <button
@@ -137,7 +153,6 @@ export function SignupForm({
                   </button>
                 </div>
 
-                {/* Confirm Password */}
                 <div className="grid gap-3 relative">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
@@ -157,12 +172,10 @@ export function SignupForm({
                   </button>
                 </div>
 
-                {/* Submit */}
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Creating account..." : "Sign Up"}
                 </Button>
 
-                {/* Already have an account */}
                 <div className="mt-4 text-center text-sm">
                   Already have an account?{" "}
                   <a href="/login" className="underline underline-offset-4">

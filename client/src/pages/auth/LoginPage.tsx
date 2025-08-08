@@ -7,7 +7,7 @@ import {toast} from "sonner";
 import {useNavigate} from "react-router-dom";
 import {saveToken} from "@/lib/token.ts";
 
-const Login = () => {
+const LoginPage = () => {
 
     const [formState, setFormState] = useState({ email: '', password: '' });
     const [login, { loading }] = useMutation(LOGIN_MUTATION);
@@ -35,8 +35,8 @@ const Login = () => {
                 toast.error(data?.login?.message);
             }
         } catch (err: any) {
-            console.error('Login error:', err.message);
-            toast('Login failed.');
+            console.error('LoginPage error:', err.message);
+            toast('LoginPage failed.');
         }
     };
 
@@ -46,4 +46,4 @@ const Login = () => {
         </div>
     );
 };
-export default Login;
+export default LoginPage;

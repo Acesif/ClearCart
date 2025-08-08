@@ -6,7 +6,7 @@ import {SIGNUP_MUTATION} from "@/graphql/mutations/auth/signup.ts";
 import {SignupForm} from "@/components/auth/SignupForm.tsx";
 import {useNavigate} from "react-router-dom";
 
-const Signup = () => {
+const SignupPage = () => {
     const [formState, setFormState] = useState({
         firstName: '',
         lastName: '',
@@ -58,4 +58,4 @@ const Signup = () => {
         </div>
     );
 };
-export default Signup;
+export default SignupPage;

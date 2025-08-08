@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input.tsx"
 import { Label } from "@/components/ui/label.tsx"
 import * as React from "react";
+import {useState} from "react";
+import {Eye, EyeOff} from "lucide-react";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
   setFormState: React.Dispatch<React.SetStateAction<{
@@ -27,6 +29,9 @@ export function LoginForm({
     className,
     ...props
 }: LoginFormProps) {
+
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -52,22 +57,28 @@ export function LoginForm({
                   required
                 />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
+              <div className="grid gap-3 relative">
+                <Label htmlFor="password">Password</Label>
                 <Input
                     id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    onChange={(e) => setFormState((prev) =>
-                        ({ ...prev, password: e.target.value }))}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    onChange={(e) => {
+                      setFormState((prev) => ({ ...prev, password: e.target.value }));
+                    }}
                     required
                 />
+                <button
+                    type="button"
+                    className="absolute right-3 top-8 text-sm"
+                    onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <Eye /> : <EyeOff />}
+                </button>
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Logging in...' : 'Login'}
+                  {isLoading ? 'Logging in...' : 'LoginPage'}
                 </Button>
               </div>
             </div>
