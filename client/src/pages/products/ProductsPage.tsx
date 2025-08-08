@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import type {ProductCardType} from "@/types/ProductCardType.ts";
 import {GET_PRODUCTS_BY_CATEGORY_QUERY} from "@/graphql/queries/products/getProductsByCategory.ts";
 import {GET_ALL_PRODUCTS_QUERY} from "@/graphql/queries/products/getAllProducts.ts";
@@ -14,17 +14,28 @@ const ProductsPage: React.FC = () => {
 
     const { page, handlePrevious, handleNext } = usePagination({ maxPage });
 
-
+    const navigate = useNavigate();
     const { categoryId } = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
 
     const query = categoryId ? GET_PRODUCTS_BY_CATEGORY_QUERY : GET_ALL_PRODUCTS_QUERY;
 
-    const variables = categoryId
-        ? { categoryCode: categoryId, page, limit: 2, sortDirection: 'ASC' }
-        : { page, limit: 2, sortDirection: 'ASC' };
+    const variables = categoryId ?
+        {
+            categoryCode: categoryId,
+            page, limit: 2,
+            sortDirection: 'ASC'
+        } :
+        {
+            page,
+            limit: 2,
+            sortDirection: 'ASC'
+        };
 
     const { data, loading } = useQuery(query, {
         variables,
+        fetchPolicy: queryParams.get('refresh') ? "network-only" : "cache-first"
     });
 
     useEffect(() => {
@@ -35,7 +46,9 @@ const ProductsPage: React.FC = () => {
             setProducts(data.getAllProducts.content);
             setMaxPage(data.getAllProducts.totalPages - 1);
         }
-    }, [data, categoryId]);
+        const urlWithoutParams = `${location.pathname}`;
+        navigate(urlWithoutParams, { replace: true });
+    }, [data, categoryId, location.pathname, navigate]);
 
     return (
         <div className="mt-15">

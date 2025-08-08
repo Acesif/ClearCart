@@ -45,6 +45,7 @@ const ProductDetailsCard = ({
                 console.log(data.buyProduct.message);
                 setModalOpen(false);
                 toast.success("Successfully bought product");
+                navigate(`/browse/all?refresh=true`);
             }
         },
         onError: (error) => {
@@ -75,7 +76,6 @@ const ProductDetailsCard = ({
         e.preventDefault();
         try {
             await buyProduct();
-            // navigate(`/browse/all`);
         } catch (err) {
             console.error("Error executing mutation:", err);
         }
