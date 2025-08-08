@@ -157,6 +157,18 @@ public class ProductService extends BaseService<Product> {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
+    public Mono<Page<ProductDTO>> getAllProductsByUser(
+            int page, int limit, Sort.Direction direction, Authentication authentication
+    ) {
+        UserInformation userInformation = extractUserInformation(authentication);
+        return Mono.fromCallable(() -> {
+            Page<Product> productPage = productRepository.findAllByOwner(
+                    PageRequest.of(page, limit, Sort.by(direction, "createDate")),
+                    userInformation.userId());
+            return getProductDTOS(productPage);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
     public Mono<Page<ProductDTO>> getAllProductsByCategory(int page, int limit, Sort.Direction direction, String category) {
         return Mono.fromCallable(() -> {
             Page<Product> productPage = productRepository.findAllByProductCategory(
@@ -169,23 +181,7 @@ public class ProductService extends BaseService<Product> {
 
     private Page<ProductDTO> getProductDTOS(Page<Product> productPage) {
         List<ProductDTO> products = productPage.getContent().stream()
-                .map(product -> {
-                    List<String> categoryNames = product.getProductCategory()
-                            .stream()
-                            .map(ProductCategory::getCategoryCode)
-                            .toList();
-
-                    return ProductDTO.builder()
-                            .id(product.getId())
-                            .title(product.getTitle())
-                            .description(product.getDescription())
-                            .price(product.getPrice())
-                            .productCategoryIds(categoryNames)
-                            .rate(product.getRate())
-                            .interval(product.getInterval())
-                            .isDraft(product.getIsDraft())
-                            .build();
-                })
+                .map(this::toDTO)
                 .filter(p -> !p.isDraft())
                 .toList();
         return new PageImpl<>(products, productPage.getPageable(), productPage.getTotalElements());
@@ -204,6 +200,8 @@ public class ProductService extends BaseService<Product> {
                         : List.of())
                 .rate(product.getRate())
                 .interval(product.getInterval())
+                .owner(product.getOwner().getId())
+                .isDraft(product.getIsDraft())
                 .build();
     }
 

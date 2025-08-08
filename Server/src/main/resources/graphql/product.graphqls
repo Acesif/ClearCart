@@ -48,6 +48,7 @@ type ProductData {
     price: Float
     productCategoryIds: [String]
     rate: Float
+    owner: String
     interval: RateInterval
 }
 
@@ -66,6 +67,7 @@ type ProductResponse {
 
 extend type Query {
     getAllProducts(page: Int!, limit: Int!, sortDirection: SortDirection): ProductPage!
+    getAllProductsByUser(page: Int!, limit: Int!, sortDirection: SortDirection): ProductPage!
     getByCategory(page: Int!, limit: Int!, sortDirection: SortDirection, categoryCode: CategoryCode!): ProductPage!
     getAllCategories: [CategoryCode]!
     getProduct(id: String!): ProductResponse!

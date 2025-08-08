@@ -1,0 +1,24 @@
+enum TransactionType {
+    LOAN
+    TRADE
+}
+
+type Transaction {
+    id: ID
+    product: ProductData
+    fromOwnerId: ID
+    toOwnerId: ID
+    transactionType: TransactionType
+    fromRentDate: String
+    toRentDate: String
+}
+
+type GenericResponseTransaction {
+    message: String
+    data: Transaction
+}
+
+extend type Mutation {
+    buyProduct(product: ProductInput!): GenericResponseTransaction!
+    rentProduct(product: ProductInput!, fromRentDate: String!, toRentDate: String!): GenericResponseTransaction!
+}

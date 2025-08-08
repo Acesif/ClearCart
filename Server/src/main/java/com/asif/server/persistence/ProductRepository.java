@@ -4,6 +4,7 @@ import com.asif.server.base.BaseRepository;
 import com.asif.server.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -23,4 +24,6 @@ public interface ProductRepository extends BaseRepository<Product> {
             Pageable pageable
     );
 
+    @Query("SELECT p FROM Product p where p.owner.id = :ownerId and p.flag = true")
+    Page<Product> findAllByOwner(Pageable pageable, String ownerId);
 }

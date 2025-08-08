@@ -16,6 +16,7 @@ public record ProductDTO(
         List<String> productCategoryIds,
         BigDecimal rate,
         RateInterval interval,
-        Boolean isDraft
+        Boolean isDraft,
+        String owner
 ) {}
 

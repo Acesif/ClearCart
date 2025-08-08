@@ -44,6 +44,7 @@ public class ProductController {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     public Mono<Page<ProductDTO>> getAllProducts(
             @Argument int page,
             @Argument int limit,
@@ -54,6 +55,19 @@ public class ProductController {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
+    public Mono<Page<ProductDTO>> getAllProductsByUser(
+            @Argument int page,
+            @Argument int limit,
+            @Argument(name = "sortDirection") Sort.Direction direction,
+            Authentication authentication
+    ) {
+        Sort.Direction sortDir = direction != null ? direction : Sort.Direction.ASC;
+        return productService.getAllProductsByUser(page, limit, sortDir, authentication);
+    }
+
+    @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     public Mono<Page<ProductDTO>> getByCategory(
             @Argument int page,
             @Argument int limit,
@@ -70,6 +84,7 @@ public class ProductController {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     public Mono<GenericResponse<ProductDTO>> getProduct(@Argument String id) {
         return productService.getProductById(id);
     }
