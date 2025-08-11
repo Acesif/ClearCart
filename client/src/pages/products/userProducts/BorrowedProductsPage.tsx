@@ -11,11 +11,28 @@ const BorrowedProductsPage: React.FC = () => {
     const [maxPage, setMaxPage] = useState(Number.MAX_SAFE_INTEGER);
     const { page, handlePrevious, handleNext } = usePagination({ maxPage });
 
-    const {data, loading, error} = useQuery(SEE_BORROWED_QUERY)
+    const {data, loading, error} = useQuery(SEE_BORROWED_QUERY, {
+        variables: {
+            page,
+            limit: 2,
+            sortDirection: 'ASC'
+        }
+    })
 
     useEffect(() => {
         if (data?.seeBorrowed?.content) {
-            setMyProducts(data.seeBorrowed.content);
+            const productsOnly = data.seeBorrowed.content.map((t: any) => t.product);
+
+            const uniqueProducts = Array.from(
+                new Map(productsOnly.map((p: ProductCardType) => [p.id, p])).values()
+            );
+
+            const normalized = uniqueProducts.map((p: any) => ({
+                ...p,
+                productCategoryIds: p.productCategoryIds ?? [],
+            }));
+
+            setMyProducts(normalized);
             setMaxPage(data.seeBorrowed.totalPages - 1);
         } else {
             console.error(error?.message);

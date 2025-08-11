@@ -6,7 +6,7 @@ export const buttonStyle = (isDisabled: boolean): string =>
         {
             variants: {
                 disabled: {
-                    true: 'bg-indigo-400 cursor-not-allowed',
+                    true: 'bg-indigo-400 cursor-not-allowed opacity-50',
                     false: 'bg-indigo-500 hover:bg-indigo-400',
                 },
             },

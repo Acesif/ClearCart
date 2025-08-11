@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label.tsx"
 import * as React from "react";
 import {useState} from "react";
 import {Eye, EyeOff} from "lucide-react";
+import Loader from "@/components/commons/Loader.tsx";
 
 type LoginFormProps = React.ComponentProps<"div"> & {
   setFormState: React.Dispatch<React.SetStateAction<{
@@ -78,7 +79,7 @@ export function LoginForm({
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Logging in...' : 'LoginPage'}
+                  {isLoading ? (<Loader className="w-5 h-5"/>) : <p>Login</p> }
                 </Button>
               </div>
             </div>

@@ -10,13 +10,15 @@ type RentingConfirmationModalProps = {
     closeModal: (e: { preventDefault: () => void }) => void,
     handleRent: (e: { preventDefault: () => void }, fromRentDate: string, toRentDate: string) => void,
     productId: string;
+    rentLoading: boolean;
 }
 
 const RentingConfirmationModal = ({
-                                      handleRent,
-                                      closeModal,
-                                      productId
-                                  }: RentingConfirmationModalProps) => {
+    handleRent,
+    closeModal,
+    productId,
+    rentLoading,
+}: RentingConfirmationModalProps) => {
     const [range, setRange] = useState<DateRange | undefined>();
 
     const { data, loading, error } = useQuery(GET_TRANSACTIONS_BY_PRODUCT_ID_QUERY, {
@@ -58,15 +60,16 @@ const RentingConfirmationModal = ({
                 />
                 <div className="flex justify-between gap-4 mt-4">
                     <button
-                        className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-md"
+                        className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={closeModal}
+                        disabled={ loading || rentLoading}
                     >
                         Go Back
                     </button>
                     <button
-                        className="bg-indigo-400 hover:bg-indigo-500 text-white px-4 py-2 rounded-md"
+                        className="bg-indigo-400 hover:bg-indigo-500 text-white px-4 py-2 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={(e) => handleRent(e, fromRentDate, toRentDate)}
-                        disabled={isSelectionInvalid}
+                        disabled={isSelectionInvalid || loading || rentLoading }
                     >
                         Confirm Rent
                     </button>

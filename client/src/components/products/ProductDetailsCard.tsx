@@ -34,7 +34,7 @@ const ProductDetailsCard = ({
         setRentModalOpen(!rentModalOpen);
     }
 
-    const [buyProduct] = useMutation(BUY_PRODUCT_MUTATION, {
+    const [buyProduct, { loading: buyLoading }] = useMutation(BUY_PRODUCT_MUTATION, {
         refetchQueries: [
             GET_ALL_PRODUCTS_QUERY,
             "GetAllProducts",
@@ -53,7 +53,7 @@ const ProductDetailsCard = ({
         },
     });
 
-    const [rentProduct] = useMutation(RENT_PRODUCT_MUTATION, {
+    const [rentProduct, { loading: rentLoading}] = useMutation(RENT_PRODUCT_MUTATION, {
         refetchQueries: [
             GET_ALL_PRODUCTS_QUERY,
             "GetAllProducts",
@@ -112,20 +112,28 @@ const ProductDetailsCard = ({
                 {description}
             </p>
             <div className="flex justify-end space-x-4">
-                <button className={buttonStyle(false)} onClick={toggleRentModal}>
+                <button
+                    className={buttonStyle(rentLoading)}
+                    onClick={toggleRentModal}
+                    disabled={rentLoading}
+                >
                     Rent
                 </button>
-                <button className={buttonStyle(false)} onClick={toggleModal}>
+                <button
+                    className={buttonStyle(buyLoading)}
+                    onClick={toggleModal}
+                    disabled={buyLoading}
+                >
                     Buy
                 </button>
             </div>
 
             {modalOpen && (
-                <BuyingConfirmationModal closeModal={toggleModal} handleBuy={handleBuy} />
+                <BuyingConfirmationModal closeModal={toggleModal} handleBuy={handleBuy} buyLoading={buyLoading}/>
             )}
 
             {rentModalOpen && (
-                <RentingConfirmationModal closeModal={toggleRentModal} handleRent={handleRent} productId={id}/>
+                <RentingConfirmationModal closeModal={toggleRentModal} handleRent={handleRent} productId={id} rentLoading={rentLoading}/>
             )}
         </div>
     );

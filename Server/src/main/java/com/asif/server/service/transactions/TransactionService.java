@@ -102,7 +102,9 @@ public class TransactionService extends BaseService<ProductTransactions> {
                         .build();
             }
 
-            productService.delete(product.id());
+            productEntity.setOwner(buyer);
+            productEntity.setFlag(false);
+            productService.update(productEntity);
 
             TransactionDTO transactionDTO = toDTO(transaction);
             return GenericResponse.<TransactionDTO>builder()

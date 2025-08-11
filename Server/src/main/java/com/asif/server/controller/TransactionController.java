@@ -101,49 +101,4 @@ public class TransactionController {
     public Mono<GenericResponse<List<TransactionDTO>>> getTransactionsByProductId(@Argument String productId) {
         return transactionService.getTransactionsByProductId(productId);
     }
-
-
-//@QueryMapping
-//@PreAuthorize("isAuthenticated()")
-//public Mono<List<TransactionDTO>> seeBought(
-//        @Argument int page,
-//        @Argument int limit,
-//        @Argument(name = "sortDirection") Sort.Direction direction,
-//        Authentication authentication
-//) {
-//    return transactionService.seeMyBoughtItems(authentication);
-//}
-//
-//    @QueryMapping
-//    @PreAuthorize("isAuthenticated()")
-//    public Mono<List<TransactionDTO>> seeSold(
-//            @Argument int page,
-//            @Argument int limit,
-//            @Argument(name = "sortDirection") Sort.Direction direction,
-//            Authentication authentication
-//    ) {
-//        return transactionService.seeMySoldItems(authentication);
-//    }
-//
-//    @QueryMapping
-//    @PreAuthorize("isAuthenticated()")
-//    public Mono<List<TransactionDTO>> seeLent(
-//            @Argument int page,
-//            @Argument int limit,
-//            @Argument(name = "sortDirection") Sort.Direction direction,
-//            Authentication authentication
-//    ) {
-//        return transactionService.seeMyLentItems(authentication);
-//    }
-//
-//    @QueryMapping
-//    @PreAuthorize("isAuthenticated()")
-//    public Mono<List<TransactionDTO>> seeBorrowed(
-//            @Argument int page,
-//            @Argument int limit,
-//            @Argument(name = "sortDirection") Sort.Direction direction,
-//            Authentication authentication
-//    ) {
-//        return transactionService.seeMyBorrowedItems(authentication);
-//    }
 }
