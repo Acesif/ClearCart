@@ -62,7 +62,7 @@ This is the recommended way to run the application for development. It will star
 1.  Make sure you have Docker and Docker Compose installed on your system.
 2.  From the root directory of the project, run the following command:
     ```bash
-    docker-compose up --build
+    docker compose up --build
     ```
 3.  The services will be available at the following URLs:
     - Frontend: `http://localhost:5173`

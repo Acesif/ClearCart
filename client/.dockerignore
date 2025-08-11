@@ -1,0 +1,9 @@
+node_modules
+.pnpm
+.pnpm-store
+dist
+build
+coverage
+*.log
+.git
+.gitignore

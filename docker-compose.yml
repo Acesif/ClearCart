@@ -1,17 +1,22 @@
-version: '3.8'
 services:
-  db:
-    image: postgres:15-alpine
-    restart: always
+  postgres:
+    build:
+      context: ./database
+    container_name: postgres-clearcart
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_DB=clearcart
+      POSTGRES_DB: clearcart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
     ports:
-      - '5432:5432'
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clearcart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
   server:
     build:
       context: ./Server
@@ -19,9 +24,10 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      postgres:
+        condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/clearcart
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/clearcart
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=mysecretpassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
